@@ -44,10 +44,10 @@ export default async function BusinessConsolePage() {
     status: l.status,
     originalPrice: l.originalPrice ? Number(l.originalPrice) : null,
     discountPrice: l.discountPrice ? Number(l.discountPrice) : null,
-    collectionDeadline: l.collectionDeadline.toISOString(),
+    collectionDeadline: l.collectionDeadline ? l.collectionDeadline.toISOString() : new Date().toISOString(),
     businessName: l.businessProfile?.businessName || "Artisan Crumbs Bakery",
     address: l.businessProfile?.address || "124 Market Street",
-    claimRequest: l.claimRequests[0]
+    claimRequest: l.claimRequests && l.claimRequests[0]
       ? {
           id: l.claimRequests[0].id,
           claimType: l.claimRequests[0].claimType,
@@ -58,8 +58,8 @@ export default async function BusinessConsolePage() {
       : null,
     pickup: l.pickup
       ? {
-          windowStart: l.pickup.windowStart.toISOString(),
-          windowEnd: l.pickup.windowEnd.toISOString(),
+          windowStart: l.pickup.windowStart ? l.pickup.windowStart.toISOString() : new Date().toISOString(),
+          windowEnd: l.pickup.windowEnd ? l.pickup.windowEnd.toISOString() : new Date().toISOString(),
           confirmedAt: l.pickup.confirmedAt ? l.pickup.confirmedAt.toISOString() : null,
         }
       : null,

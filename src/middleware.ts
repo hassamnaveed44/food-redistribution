@@ -1,18 +1,19 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 const isBusinessRoute = createRouteMatcher(["/business/(.*)", "/business"]);
 const isNgoRoute = createRouteMatcher(["/ngo/(.*)", "/ngo"]);
 const isAdminRoute = createRouteMatcher(["/admin/(.*)", "/admin"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId, sessionClaims } = await auth();
+  const { userId } = await auth();
 
   // If visiting protected role routes, require user authentication
   if (isBusinessRoute(req) || isNgoRoute(req) || isAdminRoute(req)) {
     if (!userId) {
       const signInUrl = new URL("/sign-in", req.url);
       signInUrl.searchParams.set("redirect_url", req.url);
-      return Response.redirect(signInUrl);
+      return NextResponse.redirect(signInUrl);
     }
   }
 });

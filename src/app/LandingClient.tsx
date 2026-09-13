@@ -28,15 +28,15 @@ export function LandingClient() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF9F6] text-[#0F172A]">
       {/* Top Navbar */}
-      <header className="border-b border-slate-200/80 bg-[#004F38] text-white px-6 py-4 sticky top-0 z-40 shadow-md">
+      <header className="border-b border-emerald-950/20 bg-[#004F38] text-white px-6 py-4 sticky top-0 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-xl bg-[#00CC88] flex items-center justify-center text-white font-extrabold text-xl shadow-md group-hover:scale-105 transition-transform">
-              <Sparkles className="w-6 h-6 text-[#004F38]" />
+              <Leaf className="w-6 h-6 text-[#004F38]" />
             </div>
             <div>
               <span className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1.5">
-                RescueBites <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#00CC88] text-[#004F38] font-black">TGTG Edition</span>
+                RescueBites <span className="text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#00CC88] text-[#004F38] font-extrabold">TGTG Edition</span>
               </span>
               <span className="text-xs text-emerald-200/80 block -mt-0.5 font-medium">
                 Surplus Food & Magic Bag Network
@@ -48,7 +48,7 @@ export function LandingClient() {
             {isSignedIn ? (
               <>
                 <Link href="/redirect">
-                  <Button variant="donate" size="sm" className="shadow-md">
+                  <Button variant="donate" size="sm" className="shadow-md hover:scale-105 transition-transform">
                     <LayoutDashboard className="w-4 h-4 mr-1.5" /> Go to Console
                   </Button>
                 </Link>
@@ -62,8 +62,8 @@ export function LandingClient() {
                   </Button>
                 </Link>
                 <Link href="/sign-up">
-                  <Button variant="donate" size="sm" className="shadow-lg">
-                    Join the Mission
+                  <Button variant="donate" size="sm" className="shadow-md hover:scale-105 transition-transform">
+                    Join the Movement
                   </Button>
                 </Link>
               </>
@@ -74,19 +74,15 @@ export function LandingClient() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-[#004F38] text-white pt-16 pb-24 px-6">
-        {/* Decorative background glows */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#00CC88]/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#FF5A5F]/20 rounded-full blur-3xl pointer-events-none" />
-
         <div className="max-w-6xl mx-auto text-center flex flex-col items-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#00CC88]/20 border border-[#00CC88]/40 text-xs font-extrabold text-[#00CC88] mb-6 backdrop-blur-sm"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#00CC88]/20 border border-[#00CC88]/30 text-xs font-extrabold text-[#00CC88] mb-6"
           >
-            <Sparkles className="w-4 h-4 text-[#FFC72C]" />
-            <span>SAVE GOOD FOOD FROM BEING WASTED</span>
+            <Leaf className="w-4 h-4 text-[#00CC88]" />
+            <span>ZERO FOOD WASTE MOVEMENT</span>
           </motion.div>
 
           <motion.h1
@@ -95,7 +91,7 @@ export function LandingClient() {
             transition={{ duration: 0.4, delay: 0.1 }}
             className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 max-w-4xl"
           >
-            Delicious surplus food from local stores, <span className="text-[#FFC72C]">up to 70% off.</span>
+            Save Good Food. Save Money. <span className="text-[#FFC72C]">Rescue Magic Bags Near You.</span>
           </motion.h1>
 
           <motion.p
@@ -104,7 +100,7 @@ export function LandingClient() {
             transition={{ duration: 0.4, delay: 0.2 }}
             className="text-lg md:text-xl text-emerald-100/90 max-w-3xl mb-10 leading-relaxed font-medium"
           >
-            Every day, top bakeries, cafes, and supermarkets package unsold fresh surplus into <strong>Surprise Magic Bags</strong> or list <strong>100% Free NGO Donations</strong>. Rescue food, save money, and feed your community!
+            Every day, top bakeries, cafes, and markets list fresh unsold surplus as <strong>Surprise Magic Bags</strong> at up to 70% off or <strong>100% Free NGO Relief</strong>. Save delicious food and support local communities!
           </motion.p>
 
           {/* Impact Stats Banner */}
@@ -112,7 +108,7 @@ export function LandingClient() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: 0.25 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl mb-12 bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/15"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl mb-12 bg-white/10 p-5 rounded-2xl border border-white/15 shadow-sm"
           >
             <div className="flex flex-col items-center">
               <span className="text-2xl md:text-3xl font-extrabold text-[#00CC88] flex items-center gap-1">

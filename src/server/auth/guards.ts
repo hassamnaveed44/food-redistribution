@@ -57,17 +57,55 @@ export async function getCurrentUser() {
         console.warn("Clerk user details fetch warning:", syncErr);
       }
 
-      // Upsert user into database
-      dbUser = await prisma.user.upsert({
-        where: { clerkUserId },
-        update: { email, fullName, role },
-        create: { clerkUserId, email, fullName, role },
-        include: {
-          businessProfile: true,
-          ngoProfile: true,
-          buyerProfile: true,
-        },
-      }).catch(() => null);
+      // Create user into database without transaction
+      try {
+        dbUser = await prisma.user.create({
+          data: { clerkUserId, email, fullName, role },
+          include: {
+            businessProfile: true,
+            ngoProfile: true,
+            buyerProfile: true,
+          },
+        });
+      } catch {
+        dbUser = await prisma.user.findUnique({
+          where: { clerkUserId },
+          include: {
+            businessProfile: true,
+            ngoProfile: true,
+            buyerProfile: true,
+          },
+        });
+      }
+    }
+
+    if (dbUser) {
+      if (dbUser.role === Role.BUSINESS && !dbUser.businessProfile) {
+        const bp = await prisma.businessProfile.create({
+          data: {
+            userId: dbUser.id,
+            businessName: dbUser.fullName ? `${dbUser.fullName}'s Store` : "RescueBites Partner Store",
+            address: "100 Market St, Downtown",
+            latitude: 40.7128,
+            longitude: -74.006,
+            verificationStatus: "APPROVED",
+          },
+        }).catch(() => null);
+        if (bp) return { ...dbUser, businessProfile: bp };
+      } else if ((dbUser.role === Role.NGO || dbUser.role === Role.BUYER) && !dbUser.ngoProfile) {
+        const np = await prisma.ngoProfile.create({
+          data: {
+            userId: dbUser.id,
+            orgName: dbUser.fullName ? `${dbUser.fullName} Relief Org` : "Community Hope Hub",
+            address: "200 Community Way, Midtown",
+            latitude: 40.7138,
+            longitude: -74.001,
+            receivingCapacity: 150,
+            verificationStatus: "APPROVED",
+          },
+        }).catch(() => null);
+        if (np) return { ...dbUser, ngoProfile: np };
+      }
     }
 
     return dbUser;

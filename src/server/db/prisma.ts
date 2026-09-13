@@ -1,10 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Pool, neonConfig } from "@neondatabase/serverless";
-import { PrismaNeon } from "@prisma/adapter-neon";
-import ws from "ws";
-
-// Set webSocketConstructor for Node.js runtime environment to prevent pool hanging
-neonConfig.webSocketConstructor = ws;
+import { PrismaNeonHttp } from "@prisma/adapter-neon";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -15,13 +10,7 @@ function createPrismaClient() {
     process.env.DATABASE_URL ||
     "postgresql://placeholder:placeholder@localhost:5432/placeholder";
 
-  const pool = new Pool({
-    connectionString,
-    connectionTimeoutMillis: 15000, // 15s connection timeout for Neon cold starts
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const adapter = new PrismaNeon(pool as any);
+  const adapter = new PrismaNeonHttp(connectionString);
 
   return new PrismaClient({
     adapter,
@@ -35,3 +24,4 @@ function createPrismaClient() {
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
