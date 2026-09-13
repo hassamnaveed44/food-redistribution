@@ -3,7 +3,7 @@ import { prisma } from "@/server/db/prisma";
 import { Role } from "@prisma/client";
 
 // Helper with timeout to prevent database connection hanging
-async function withTimeout<T>(promise: Promise<T>, ms: number = 4000): Promise<T> {
+async function withTimeout<T>(promise: Promise<T>, ms: number = 10000): Promise<T> {
   let timeoutId: NodeJS.Timeout;
   const timeoutPromise = new Promise<never>((_, reject) => {
     timeoutId = setTimeout(() => reject(new Error("DB_TIMEOUT")), ms);
@@ -27,7 +27,7 @@ export async function getCurrentUser() {
             buyerProfile: true,
           },
         }),
-        2000
+        8000
       );
     }
 
@@ -40,7 +40,7 @@ export async function getCurrentUser() {
           buyerProfile: true,
         },
       }),
-      3000
+      10000
     ).catch(() => null);
 
     // Auto-sync / auto-provision new Clerk user if not yet in DB
@@ -73,7 +73,7 @@ export async function getCurrentUser() {
                 buyerProfile: true,
               },
             }),
-            3000
+            10000
           );
         }
       } catch (syncErr) {

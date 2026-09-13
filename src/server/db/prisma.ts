@@ -17,7 +17,7 @@ function createPrismaClient() {
 
   const pool = new Pool({
     connectionString,
-    connectionTimeoutMillis: 5000, // 5s connection timeout instead of default 60s
+    connectionTimeoutMillis: 15000, // 15s connection timeout for Neon cold starts
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
