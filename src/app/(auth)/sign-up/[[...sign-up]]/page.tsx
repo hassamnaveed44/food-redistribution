@@ -65,6 +65,7 @@ export default function SignUpPage() {
         </div>
 
         <SignUp
+          fallbackRedirectUrl="/redirect"
           unsafeMetadata={{
             role: selectedRole.toUpperCase(),
           }}

@@ -13,6 +13,7 @@ export default function SignInPage() {
           </p>
         </div>
         <SignIn
+          fallbackRedirectUrl="/redirect"
           appearance={{
             elements: {
               formButtonPrimary: "bg-[#B84A16] hover:bg-[#a14013] text-white text-xs",
@@ -20,6 +21,7 @@ export default function SignInPage() {
             },
           }}
         />
+
       </div>
     </div>
   );
