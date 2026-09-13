@@ -11,17 +11,7 @@ export default async function RoleRedirectPage() {
   }
 
   if (user.role === "BUSINESS") {
-    if (!user.businessProfile) {
-      redirect("/business/onboarding");
-    }
     redirect("/business/console");
-  }
-
-  if (user.role === "NGO") {
-    if (!user.ngoProfile) {
-      redirect("/ngo/onboarding");
-    }
-    redirect("/ngo/console");
   }
 
   if (user.role === "ADMIN") {

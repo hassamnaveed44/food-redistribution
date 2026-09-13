@@ -11,13 +11,13 @@ export default function SignUpPage() {
   const [selectedRole, setSelectedRole] = useState<string>(initialRole);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5F1E8] p-4 py-12">
-      <div className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-sm border border-[#E3DBC9] flex flex-col">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF9F6] p-4 py-12">
+      <div className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-lg border border-slate-200/80 flex flex-col">
         <div className="mb-6 text-center">
-          <h1 className="font-serif text-2xl font-semibold text-[#211D19] mb-1">
-            Create your Account
+          <h1 className="text-2xl font-extrabold text-[#004F38] mb-1">
+            Create your RescueBites Account
           </h1>
-          <p className="text-xs text-[#6B6157]">
+          <p className="text-xs text-slate-600 font-medium">
             Select your organization type to customize your platform console.
           </p>
         </div>
@@ -29,11 +29,11 @@ export default function SignUpPage() {
             onClick={() => setSelectedRole("business")}
             className={`p-3 rounded-xl border text-left flex flex-col items-center justify-center gap-1.5 transition-all ${
               selectedRole === "business"
-                ? "border-[#B84A16] bg-[#B84A16]/5 text-[#B84A16] font-semibold"
-                : "border-[#E3DBC9] bg-white text-[#6B6157] hover:border-[#B84A16]/50"
+                ? "border-[#004F38] bg-[#004F38]/10 text-[#004F38] font-extrabold"
+                : "border-slate-200 bg-white text-slate-600 hover:border-[#004F38]/50"
             }`}
           >
-            <Building2 className="w-5 h-5" />
+            <Building2 className="w-5 h-5 text-[#004F38]" />
             <span className="text-xs">Business</span>
           </button>
 
@@ -42,11 +42,11 @@ export default function SignUpPage() {
             onClick={() => setSelectedRole("ngo")}
             className={`p-3 rounded-xl border text-left flex flex-col items-center justify-center gap-1.5 transition-all ${
               selectedRole === "ngo"
-                ? "border-[#25423A] bg-[#25423A]/5 text-[#25423A] font-semibold"
-                : "border-[#E3DBC9] bg-white text-[#6B6157] hover:border-[#25423A]/50"
+                ? "border-[#00CC88] bg-[#00CC88]/10 text-[#004F38] font-extrabold"
+                : "border-slate-200 bg-white text-slate-600 hover:border-[#00CC88]/50"
             }`}
           >
-            <HeartHandshake className="w-5 h-5" />
+            <HeartHandshake className="w-5 h-5 text-[#00CC88]" />
             <span className="text-xs">NGO / Shelter</span>
           </button>
 
@@ -55,23 +55,24 @@ export default function SignUpPage() {
             onClick={() => setSelectedRole("buyer")}
             className={`p-3 rounded-xl border text-left flex flex-col items-center justify-center gap-1.5 transition-all ${
               selectedRole === "buyer"
-                ? "border-[#2E5E8C] bg-[#2E5E8C]/5 text-[#2E5E8C] font-semibold"
-                : "border-[#E3DBC9] bg-white text-[#6B6157] hover:border-[#2E5E8C]/50"
+                ? "border-[#FF5A5F] bg-[#FF5A5F]/10 text-[#FF5A5F] font-extrabold"
+                : "border-slate-200 bg-white text-slate-600 hover:border-[#FF5A5F]/50"
             }`}
           >
-            <ShoppingBag className="w-5 h-5" />
-            <span className="text-xs">Buyer</span>
+            <ShoppingBag className="w-5 h-5 text-[#FF5A5F]" />
+            <span className="text-xs">Food Rescuer</span>
           </button>
         </div>
 
         <SignUp
+          forceRedirectUrl="/redirect"
           fallbackRedirectUrl="/redirect"
           unsafeMetadata={{
             role: selectedRole.toUpperCase(),
           }}
           appearance={{
             elements: {
-              formButtonPrimary: "bg-[#B84A16] hover:bg-[#a14013] text-white text-xs",
+              formButtonPrimary: "bg-[#004F38] hover:bg-[#003828] text-white text-xs font-bold",
               card: "shadow-none p-0 w-full",
             },
           }}

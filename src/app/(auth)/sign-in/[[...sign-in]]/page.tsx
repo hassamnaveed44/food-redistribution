@@ -20,11 +20,12 @@ export default async function SignInPage() {
           </p>
         </div>
         <SignIn
+          forceRedirectUrl="/redirect"
           fallbackRedirectUrl="/redirect"
           appearance={{
             elements: {
               formButtonPrimary:
-                "bg-[#B84A16] hover:bg-[#a14013] text-white text-xs",
+                "bg-[#004F38] hover:bg-[#003828] text-white text-xs font-bold",
               card: "shadow-none p-0 w-full",
             },
           }}

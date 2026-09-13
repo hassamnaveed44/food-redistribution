@@ -39,43 +39,72 @@ export async function getCurrentUser() {
 
     // Auto-sync / auto-provision new Clerk user if not yet in DB
     if (!dbUser) {
-      let email = `${clerkUserId}@example.com`;
-      let fullName = "User";
-      let role: Role = Role.BUSINESS;
+      let email = `${clerkUserId}@rescuebites.com`;
+      let fullName = "RescueBites User";
+      let role: Role = Role.NGO;
 
       try {
         const clerkUser = await getClerkUser();
         if (clerkUser) {
-          email = clerkUser.emailAddresses[0]?.emailAddress || email;
-          fullName = `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() || fullName;
+          const primaryEmail = clerkUser.emailAddresses[0]?.emailAddress;
+          if (primaryEmail) email = primaryEmail;
+
+          const nameStr = `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim();
+          if (nameStr) fullName = nameStr;
+
           const roleMeta = (clerkUser.unsafeMetadata?.role as string)?.toUpperCase();
-          if (roleMeta === "NGO") role = Role.NGO;
+          if (roleMeta === "BUSINESS") role = Role.BUSINESS;
           else if (roleMeta === "ADMIN") role = Role.ADMIN;
-          else if (roleMeta === "BUSINESS") role = Role.BUSINESS;
+          else role = Role.NGO;
         }
       } catch (syncErr) {
         console.warn("Clerk user details fetch warning:", syncErr);
       }
 
-      // Create user into database without transaction
-      try {
-        dbUser = await prisma.user.create({
-          data: { clerkUserId, email, fullName, role },
+      // Check if user already exists in Neon DB by email
+      const existingByEmail = await prisma.user.findUnique({
+        where: { email },
+        include: {
+          businessProfile: true,
+          ngoProfile: true,
+          buyerProfile: true,
+        },
+      }).catch(() => null);
+
+      if (existingByEmail) {
+        // Link existing record to this clerkUserId
+        dbUser = await prisma.user.update({
+          where: { id: existingByEmail.id },
+          data: { clerkUserId, fullName: fullName !== "RescueBites User" ? fullName : existingByEmail.fullName },
           include: {
             businessProfile: true,
             ngoProfile: true,
             buyerProfile: true,
           },
-        });
-      } catch {
-        dbUser = await prisma.user.findUnique({
-          where: { clerkUserId },
-          include: {
-            businessProfile: true,
-            ngoProfile: true,
-            buyerProfile: true,
-          },
-        });
+        }).catch(() => existingByEmail);
+      } else {
+        // Create new user row in Neon DB
+        try {
+          dbUser = await prisma.user.create({
+            data: { clerkUserId, email, fullName, role },
+            include: {
+              businessProfile: true,
+              ngoProfile: true,
+              buyerProfile: true,
+            },
+          });
+        } catch {
+          // If email constraint fails, fallback to unique clerk email
+          const fallbackEmail = `${clerkUserId}@user.rescuebites.com`;
+          dbUser = await prisma.user.create({
+            data: { clerkUserId, email: fallbackEmail, fullName, role },
+            include: {
+              businessProfile: true,
+              ngoProfile: true,
+              buyerProfile: true,
+            },
+          }).catch(() => null);
+        }
       }
     }
 
@@ -84,7 +113,7 @@ export async function getCurrentUser() {
         const bp = await prisma.businessProfile.create({
           data: {
             userId: dbUser.id,
-            businessName: dbUser.fullName ? `${dbUser.fullName}'s Store` : "RescueBites Partner Store",
+            businessName: dbUser.fullName ? `${dbUser.fullName}'s Kitchen` : "Artisan Partner Store",
             address: "100 Market St, Downtown",
             latitude: 40.7128,
             longitude: -74.006,
@@ -92,11 +121,11 @@ export async function getCurrentUser() {
           },
         }).catch(() => null);
         if (bp) return { ...dbUser, businessProfile: bp };
-      } else if ((dbUser.role === Role.NGO || dbUser.role === Role.BUYER) && !dbUser.ngoProfile) {
+      } else if (!dbUser.ngoProfile && !dbUser.businessProfile) {
         const np = await prisma.ngoProfile.create({
           data: {
             userId: dbUser.id,
-            orgName: dbUser.fullName ? `${dbUser.fullName} Relief Org` : "Community Hope Hub",
+            orgName: dbUser.fullName ? `${dbUser.fullName} Relief Hub` : "Community Shelter Hub",
             address: "200 Community Way, Midtown",
             latitude: 40.7138,
             longitude: -74.001,
