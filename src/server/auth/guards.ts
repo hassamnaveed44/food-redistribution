@@ -29,17 +29,20 @@ export async function getCurrentUser() {
 
     return dbUser;
   } catch (error) {
-    console.error("Error fetching current user:", error);
-    // Fallback to first user in demo mode
-    return await prisma.user.findFirst({
-      include: {
-        businessProfile: true,
-        ngoProfile: true,
-        buyerProfile: true,
-      },
-    });
+    try {
+      return await prisma.user.findFirst({
+        include: {
+          businessProfile: true,
+          ngoProfile: true,
+          buyerProfile: true,
+        },
+      });
+    } catch {
+      return null;
+    }
   }
 }
+
 
 export async function requireRole(allowedRoles: Role[]) {
   const user = await getCurrentUser();
