@@ -3,11 +3,6 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 export default async function SignInPage() {
-  const { userId } = await auth();
-  if (userId) {
-    redirect("/redirect");
-  }
-
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5F1E8] p-4">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-sm border border-[#E3DBC9] flex flex-col items-center">
