@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.9.2",
     "@neondatabase/serverless": "^1.1.0",
     "@prisma/adapter-neon": "^7.10.0",
     "@prisma/client": "^7.10.0",
@@ -18,6 +19,7 @@
     "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "svix": "^2.5.0",
     "tailwind-merge": "^3.7.0",
     "zod": "^4.6.4"
   },
@@ -37,4 +39,3 @@
     "seed": "ts-node prisma/seed.ts"
   }
 }
-
