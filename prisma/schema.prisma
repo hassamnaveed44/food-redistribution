@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum Role {
+  BUSINESS
+  NGO
+  ADMIN
+  BUYER
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ListingOutcome {
+  DONATE
+  DISCOUNT
+}
+
+enum ListingStatus {
+  OPEN
+  REQUESTED
+  MATCHED
+  SCHEDULED
+  CONFIRMED
+  EXPIRED
+  CANCELLED
+}
+
+enum ClaimType {
+  DONATION
+  PURCHASE
+}
+
+enum ClaimStatus {
+  REQUESTED
+  ACCEPTED
+  DECLINED
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+}
+
+model User {
+  id          String   @id @default(uuid()) @db.Uuid
+  clerkUserId String   @unique @map("clerk_user_id")
+  email       String   @unique
+  fullName    String   @map("full_name")
+  role        Role     @default(BUYER)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  businessProfile  BusinessProfile?
+  ngoProfile       NgoProfile?
+  buyerProfile     BuyerProfile?
+  notifications    Notification[]
+  reports          Report[]
+  confirmedPickups Pickup[]
+
+  @@map("users")
+}
+
+model BusinessProfile {
+  id                 String             @id @default(uuid()) @db.Uuid
+  userId             String             @unique @db.Uuid @map("user_id")
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessName       String             @map("business_name")
+  address            String
+  latitude           Float
+  longitude          Float
+  verificationStatus VerificationStatus @default(PENDING) @map("verification_status")
+  createdAt          DateTime           @default(now()) @map("created_at")
+
+  verificationDocuments VerificationDocument[]
+  listings              Listing[]
+
+  @@map("business_profiles")
+}
+
+model NgoProfile {
+  id                 String             @id @default(uuid()) @db.Uuid
+  userId             String             @unique @db.Uuid @map("user_id")
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orgName            String             @map("org_name")
+  address            String?
+  latitude           Float
+  longitude          Float
+  receivingCapacity  Int                @map("receiving_capacity")
+  verificationStatus VerificationStatus @default(PENDING) @map("verification_status")
+  createdAt          DateTime           @default(now()) @map("created_at")
+
+  verificationDocuments VerificationDocument[]
+  claimRequests         ClaimRequest[]
+
+  @@map("ngo_profiles")
+}
+
+model BuyerProfile {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String?  @unique @db.Uuid @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name      String
+  contact   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  claimRequests ClaimRequest[]
+
+  @@map("buyer_profiles")
+}
+
+
+model VerificationDocument {
+  id                String           @id @default(uuid()) @db.Uuid
+  businessProfileId String?          @db.Uuid @map("business_profile_id")
+  businessProfile   BusinessProfile? @relation(fields: [businessProfileId], references: [id], onDelete: Cascade)
+  ngoProfileId      String?          @db.Uuid @map("ngo_profile_id")
+  ngoProfile        NgoProfile?      @relation(fields: [ngoProfileId], references: [id], onDelete: Cascade)
+  storageKey        String           @map("storage_key")
+  fileUrl           String?          @map("file_url")
+  uploadedAt        DateTime         @default(now()) @map("uploaded_at")
+
+  @@map("verification_documents")
+}
+
+model Listing {
+  id                 String         @id @default(uuid()) @db.Uuid
+  businessProfileId  String         @db.Uuid @map("business_profile_id")
+  businessProfile    BusinessProfile @relation(fields: [businessProfileId], references: [id], onDelete: Cascade)
+  foodType           String         @map("food_type")
+  quantity           Int
+  unit               String
+  condition          String
+  availableFrom      DateTime       @map("available_from")
+  collectionDeadline DateTime       @map("collection_deadline")
+  latitude           Float
+  longitude          Float
+  outcome            ListingOutcome
+  originalPrice      Decimal?       @map("original_price") @db.Decimal(10, 2)
+  discountPrice      Decimal?       @map("discount_price") @db.Decimal(10, 2)
+  status             ListingStatus  @default(OPEN)
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
+
+  claimRequests ClaimRequest[]
+  pickup        Pickup?
+  statusHistory StatusHistory[]
+  reports       Report[]
+
+  @@map("listings")
+}
+
+model ClaimRequest {
+  id             String        @id @default(uuid()) @db.Uuid
+  listingId      String        @unique @db.Uuid @map("listing_id")
+  listing        Listing       @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  claimType      ClaimType     @map("claim_type")
+  ngoProfileId   String?       @db.Uuid @map("ngo_profile_id")
+  ngoProfile     NgoProfile?   @relation(fields: [ngoProfileId], references: [id], onDelete: SetNull)
+  buyerProfileId String?       @db.Uuid @map("buyer_profile_id")
+  buyerProfile   BuyerProfile? @relation(fields: [buyerProfileId], references: [id], onDelete: SetNull)
+  status         ClaimStatus   @default(REQUESTED)
+  requestedAt    DateTime      @default(now()) @map("requested_at")
+
+  @@map("claim_requests")
+}
+
+model Pickup {
+  id            String    @id @default(uuid()) @db.Uuid
+  listingId     String    @unique @db.Uuid @map("listing_id")
+  listing       Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  windowStart   DateTime  @map("window_start")
+  windowEnd     DateTime  @map("window_end")
+  confirmedAt   DateTime? @map("confirmed_at")
+  confirmedById String?   @db.Uuid @map("confirmed_by_id")
+  confirmedBy   User?     @relation(fields: [confirmedById], references: [id], onDelete: SetNull)
+
+  @@map("pickups")
+}
+
+model StatusHistory {
+  id         String        @id @default(uuid()) @db.Uuid
+  listingId  String        @db.Uuid @map("listing_id")
+  listing    Listing       @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  fromStatus ListingStatus? @map("from_status")
+  toStatus   ListingStatus @map("to_status")
+  changedAt  DateTime      @default(now()) @map("changed_at")
+
+  @@map("status_history")
+}
+
+model Notification {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  message   String
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("notifications")
+}
+
+model Report {
+  id           String       @id @default(uuid()) @db.Uuid
+  listingId    String?      @db.Uuid @map("listing_id")
+  listing      Listing?     @relation(fields: [listingId], references: [id], onDelete: SetNull)
+  reportedById String       @db.Uuid @map("reported_by_id")
+  reportedBy   User         @relation(fields: [reportedById], references: [id], onDelete: Cascade)
+  reason       String
+  status       ReportStatus @default(OPEN)
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  @@map("reports")
+}
+
