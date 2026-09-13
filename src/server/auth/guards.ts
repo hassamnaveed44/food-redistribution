@@ -2,31 +2,48 @@ import { auth, currentUser as getClerkUser } from "@clerk/nextjs/server";
 import { prisma } from "@/server/db/prisma";
 import { Role } from "@prisma/client";
 
+// Helper with timeout to prevent database connection hanging
+async function withTimeout<T>(promise: Promise<T>, ms: number = 4000): Promise<T> {
+  let timeoutId: NodeJS.Timeout;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error("DB_TIMEOUT")), ms);
+  });
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    clearTimeout(timeoutId);
+  });
+}
+
 export async function getCurrentUser() {
   try {
     const { userId: clerkUserId } = await auth();
 
     if (!clerkUserId) {
       // Fallback demo user when unauthenticated in local mode
-      return await prisma.user.findFirst({
+      return await withTimeout(
+        prisma.user.findFirst({
+          include: {
+            businessProfile: true,
+            ngoProfile: true,
+            buyerProfile: true,
+          },
+        }),
+        2000
+      );
+    }
+
+    let dbUser = await withTimeout(
+      prisma.user.findUnique({
+        where: { clerkUserId },
         include: {
           businessProfile: true,
           ngoProfile: true,
           buyerProfile: true,
         },
-      });
-    }
+      }),
+      3000
+    ).catch(() => null);
 
-    let dbUser = await prisma.user.findUnique({
-      where: { clerkUserId },
-      include: {
-        businessProfile: true,
-        ngoProfile: true,
-        buyerProfile: true,
-      },
-    });
-
-    // Auto-sync / auto-provision new Clerk user if not yet synced in DB
+    // Auto-sync / auto-provision new Clerk user if not yet in DB
     if (!dbUser) {
       try {
         const clerkUser = await getClerkUser();
@@ -43,18 +60,21 @@ export async function getCurrentUser() {
               ? Role.NGO
               : roleMeta === "ADMIN"
               ? Role.ADMIN
-              : Role.BUYER;
+              : Role.BUSINESS; // Default new users to Business so they land on onboarding
 
-          dbUser = await prisma.user.upsert({
-            where: { clerkUserId },
-            update: { email, fullName, role },
-            create: { clerkUserId, email, fullName, role },
-            include: {
-              businessProfile: true,
-              ngoProfile: true,
-              buyerProfile: true,
-            },
-          });
+          dbUser = await withTimeout(
+            prisma.user.upsert({
+              where: { clerkUserId },
+              update: { email, fullName, role },
+              create: { clerkUserId, email, fullName, role },
+              include: {
+                businessProfile: true,
+                ngoProfile: true,
+                buyerProfile: true,
+              },
+            }),
+            3000
+          );
         }
       } catch (syncErr) {
         console.warn("Clerk user auto-sync warning:", syncErr);
