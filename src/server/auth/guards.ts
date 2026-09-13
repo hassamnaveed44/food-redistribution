@@ -19,66 +19,55 @@ export async function getCurrentUser() {
 
     if (!clerkUserId) {
       // Fallback demo user when unauthenticated in local mode
-      return await withTimeout(
-        prisma.user.findFirst({
-          include: {
-            businessProfile: true,
-            ngoProfile: true,
-            buyerProfile: true,
-          },
-        }),
-        8000
-      );
-    }
-
-    let dbUser = await withTimeout(
-      prisma.user.findUnique({
-        where: { clerkUserId },
+      return await prisma.user.findFirst({
         include: {
           businessProfile: true,
           ngoProfile: true,
           buyerProfile: true,
         },
-      }),
-      10000
-    ).catch(() => null);
+      }).catch(() => null);
+    }
+
+    let dbUser = await prisma.user.findUnique({
+      where: { clerkUserId },
+      include: {
+        businessProfile: true,
+        ngoProfile: true,
+        buyerProfile: true,
+      },
+    }).catch(() => null);
 
     // Auto-sync / auto-provision new Clerk user if not yet in DB
     if (!dbUser) {
+      let email = `${clerkUserId}@example.com`;
+      let fullName = "User";
+      let role: Role = Role.BUSINESS;
+
       try {
         const clerkUser = await getClerkUser();
         if (clerkUser) {
-          const email =
-            clerkUser.emailAddresses[0]?.emailAddress || `${clerkUserId}@example.com`;
-          const fullName =
-            `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() || "User";
+          email = clerkUser.emailAddresses[0]?.emailAddress || email;
+          fullName = `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim() || fullName;
           const roleMeta = (clerkUser.unsafeMetadata?.role as string)?.toUpperCase();
-          const role: Role =
-            roleMeta === "BUSINESS"
-              ? Role.BUSINESS
-              : roleMeta === "NGO"
-              ? Role.NGO
-              : roleMeta === "ADMIN"
-              ? Role.ADMIN
-              : Role.BUSINESS; // Default new users to Business so they land on onboarding
-
-          dbUser = await withTimeout(
-            prisma.user.upsert({
-              where: { clerkUserId },
-              update: { email, fullName, role },
-              create: { clerkUserId, email, fullName, role },
-              include: {
-                businessProfile: true,
-                ngoProfile: true,
-                buyerProfile: true,
-              },
-            }),
-            10000
-          );
+          if (roleMeta === "NGO") role = Role.NGO;
+          else if (roleMeta === "ADMIN") role = Role.ADMIN;
+          else if (roleMeta === "BUSINESS") role = Role.BUSINESS;
         }
       } catch (syncErr) {
-        console.warn("Clerk user auto-sync warning:", syncErr);
+        console.warn("Clerk user details fetch warning:", syncErr);
       }
+
+      // Upsert user into database
+      dbUser = await prisma.user.upsert({
+        where: { clerkUserId },
+        update: { email, fullName, role },
+        create: { clerkUserId, email, fullName, role },
+        include: {
+          businessProfile: true,
+          ngoProfile: true,
+          buyerProfile: true,
+        },
+      }).catch(() => null);
     }
 
     return dbUser;

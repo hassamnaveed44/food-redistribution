@@ -1,18 +1,24 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F5F1E8;
+  --background: #FAF9F6;
   --surface: #FFFFFF;
-  --surface-alt: #EFEAE0;
-  --primary-text: #211D19;
-  --secondary-text: #6B6157;
-  --border: #E3DBC9;
-  --primary: #B84A16;
-  --donate-accent: #25423A;
-  --discount-accent: #2E5E8C;
-  --success: #2E6B45;
-  --warning: #B8862B;
-  --danger: #B3402F;
+  --surface-alt: #F1F5F9;
+  --primary-text: #0F172A;
+  --secondary-text: #475569;
+  --border: #E2E8F0;
+  
+  /* TGTG Brand Colors */
+  --primary: #004F38;          /* Deep Emerald Teal */
+  --mint-green: #00CC88;       /* Vibrant Mint Green */
+  --coral-red: #FF5A5F;        /* Vivid Coral / Surprise Bag Accent */
+  --sunshine-yellow: #FFC72C;  /* Sunshine Gold / Discount Badge */
+  
+  --donate-accent: #004F38;    /* Deep Emerald for Free Donations */
+  --discount-accent: #FF5A5F;  /* Coral Red for Discount Surprise Bags */
+  --success: #10B981;          /* Emerald Success */
+  --warning: #F59E0B;          /* Amber Warning */
+  --danger: #EF4444;           /* Coral Danger */
 }
 
 @theme inline {
@@ -23,13 +29,16 @@
   --color-secondary-text: var(--secondary-text);
   --color-border: var(--border);
   --color-primary: var(--primary);
+  --color-mint: var(--mint-green);
+  --color-coral: var(--coral-red);
+  --color-sunshine: var(--sunshine-yellow);
   --color-donate: var(--donate-accent);
   --color-discount: var(--discount-accent);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
 }
 
@@ -40,6 +49,39 @@ body {
 }
 
 .font-serif-heading {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
+
+/* Custom TGTG Style Utilities */
+.tgtg-gradient-emerald {
+  background: linear-gradient(135deg, #004F38 0%, #002D2B 100%);
+}
+
+.tgtg-gradient-mint {
+  background: linear-gradient(135deg, #00CC88 0%, #059669 100%);
+}
+
+.tgtg-gradient-coral {
+  background: linear-gradient(135deg, #FF5A5F 0%, #E11D48 100%);
+}
+
+.tgtg-gradient-yellow {
+  background: linear-gradient(135deg, #FFC72C 0%, #F59E0B 100%);
+}
+
+.tgtg-card-shadow {
+  box-shadow: 0 10px 30px -5px rgba(0, 79, 56, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+}
+
+.tgtg-card-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tgtg-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 35px -10px rgba(0, 79, 56, 0.16), 0 8px 20px -4px rgba(0, 0, 0, 0.06);
+}
+
 

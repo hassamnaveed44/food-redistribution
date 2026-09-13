@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { StatusPill, ListingStatus } from "@/components/shared/StatusPill";
+import { StatusPill } from "@/components/shared/StatusPill";
 import { OutcomeBadge } from "@/components/shared/OutcomeBadge";
 import { CreateListingModal } from "@/features/listings/components/CreateListingModal";
 import { ListingDetailDrawer } from "@/features/listings/components/ListingDetailDrawer";
@@ -11,14 +11,15 @@ import { confirmPickupAction } from "@/features/claims/actions/confirmPickup";
 import {
   Plus,
   Building2,
-  Package,
   Gift,
   Tag,
   Clock,
   ChevronRight,
-  Filter,
   BarChart3,
-  LogOut,
+  Sparkles,
+  Leaf,
+  TrendingUp,
+  Flame,
 } from "lucide-react";
 
 export interface BusinessConsoleClientProps {
@@ -61,154 +62,161 @@ export const BusinessConsoleClient: React.FC<BusinessConsoleClientProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F5F1E8]">
-      {/* Top Console Navigation Bar */}
-      <header className="bg-white border-b border-[#E3DBC9] px-6 py-4 sticky top-0 z-30">
+    <div className="min-h-screen flex flex-col bg-[#FAF9F6] text-[#0F172A]">
+      {/* Top Store Manager Console Header */}
+      <header className="bg-[#004F38] text-white border-b border-emerald-900 px-6 py-4 sticky top-0 z-30 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-9 h-9 rounded-lg bg-[#B84A16] text-white flex items-center justify-center font-bold text-lg font-serif">
-              F
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-[#00CC88] text-[#004F38] flex items-center justify-center font-extrabold text-xl shadow-md">
+              <Building2 className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="font-serif font-semibold text-lg text-[#211D19]">
-                Business Operational Console
+              <h1 className="font-extrabold text-xl text-white tracking-tight flex items-center gap-2">
+                RescueBites Store Partner Console
               </h1>
-              <span className="text-xs text-[#6B6157]">
-                Screen 4 • Artisan Crumbs Bakery
+              <span className="text-xs text-emerald-200/80 block">
+                Store Manager: <strong>{userName || "Artisan Crumbs Bakery"}</strong>
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <Link href="/business/reporting">
-              <Button variant="secondary" size="sm">
-                <BarChart3 className="w-4 h-4 mr-1.5" /> Reporting & Analytics
+              <Button variant="secondary" size="sm" className="shadow-sm">
+                <BarChart3 className="w-4 h-4 mr-1.5" /> Environmental Reporting
               </Button>
             </Link>
 
             <Button
-              variant="primary"
+              variant="donate"
               size="sm"
+              className="shadow-lg font-bold"
               onClick={() => setIsModalOpen(true)}
             >
-              <Plus className="w-4 h-4 mr-1.5" /> + New Listing
+              <Sparkles className="w-4 h-4 mr-1.5 text-amber-200" /> + Release Surprise Bag
             </Button>
           </div>
         </div>
       </header>
 
-      {/* Main Operational Surface */}
+      {/* Main Content */}
       <main className="max-w-7xl mx-auto w-full px-6 py-8 flex-1 flex flex-col gap-8">
-        {/* Today's KPI Dashboard */}
+        {/* Store Performance KPI Bar */}
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <div className="p-5 rounded-xl bg-white border border-[#E3DBC9] shadow-xs">
-            <span className="text-xs text-[#6B6157] font-medium block">Active Surplus</span>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-3xl font-semibold text-[#211D19] tabular-nums">
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-md">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              <span>Active Surplus</span>
+              <Flame className="w-4 h-4 text-[#FF5A5F]" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-[#004F38] tabular-nums">
                 {stats.totalActive}
               </span>
-              <span className="text-xs text-[#6B6157]">batches open</span>
+              <span className="text-xs text-slate-500 font-semibold">open batches</span>
             </div>
           </div>
 
-          <div className="p-5 rounded-xl bg-white border border-[#E3DBC9] shadow-xs">
-            <span className="text-xs text-[#6B6157] font-medium block">Total Quantity</span>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-3xl font-semibold text-[#211D19] tabular-nums">
-                {stats.totalQuantity}
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-md">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              <span>Food Saved</span>
+              <TrendingUp className="w-4 h-4 text-[#00CC88]" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-[#004F38] tabular-nums">
+                {stats.totalQuantity * 2.5} kg
               </span>
-              <span className="text-xs text-[#6B6157]">portions / units</span>
+              <span className="text-xs text-slate-500 font-semibold">rescued</span>
             </div>
           </div>
 
-          <div className="p-5 rounded-xl bg-white border border-[#E3DBC9] shadow-xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-[#6B6157] font-medium">Donations</span>
-              <Gift className="w-4 h-4 text-[#25423A]" />
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-md">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              <span>CO₂ Emissions Prevented</span>
+              <Leaf className="w-4 h-4 text-emerald-500" />
             </div>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-3xl font-semibold text-[#25423A] tabular-nums">
-                {stats.donateCount}
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-emerald-600 tabular-nums">
+                {Math.round(stats.totalQuantity * 6.2)} kg
               </span>
-              <span className="text-xs text-[#6B6157]">batches</span>
+              <span className="text-xs text-slate-500 font-semibold">offset</span>
             </div>
           </div>
 
-          <div className="p-5 rounded-xl bg-white border border-[#E3DBC9] shadow-xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-[#6B6157] font-medium">Discounted Sales</span>
-              <Tag className="w-4 h-4 text-[#2E5E8C]" />
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-md">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+              <span>Revenue Recovered</span>
+              <Tag className="w-4 h-4 text-[#FF5A5F]" />
             </div>
-            <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-3xl font-semibold text-[#2E5E8C] tabular-nums">
-                {stats.discountCount}
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-extrabold text-[#FF5A5F] tabular-nums">
+                ${stats.discountCount * 18.5}
               </span>
-              <span className="text-xs text-[#6B6157]">batches</span>
+              <span className="text-xs text-slate-500 font-semibold">recovered</span>
             </div>
           </div>
         </div>
 
-        {/* Listings Data Table Section */}
-        <div className="bg-white rounded-2xl border border-[#E3DBC9] overflow-hidden shadow-xs">
-          {/* Table Toolbar & Filters */}
-          <div className="px-6 py-4 border-b border-[#E3DBC9] bg-[#F5F1E8]/40 flex items-center justify-between">
+        {/* Listings Data Table */}
+        <div className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-lg">
+          {/* Table Toolbar */}
+          <div className="px-6 py-4.5 border-b border-slate-100 bg-[#FAF9F6] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[#211D19] mr-2">Filter Outcome:</span>
+              <span className="text-xs font-extrabold text-[#004F38] uppercase tracking-wider mr-2">Filter Outcome:</span>
               <button
                 onClick={() => setFilterTab("ALL")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all ${
                   filterTab === "ALL"
-                    ? "bg-[#211D19] text-white"
-                    : "bg-white border border-[#E3DBC9] text-[#6B6157] hover:bg-[#EFEAE0]"
+                    ? "bg-[#004F38] text-white shadow-sm"
+                    : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
                 }`}
               >
-                All Listings ({listings.length})
-              </button>
-              <button
-                onClick={() => setFilterTab("DONATE")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  filterTab === "DONATE"
-                    ? "bg-[#25423A] text-white"
-                    : "bg-white border border-[#E3DBC9] text-[#6B6157] hover:bg-[#EFEAE0]"
-                }`}
-              >
-                Donate Path
+                All ({listings.length})
               </button>
               <button
                 onClick={() => setFilterTab("DISCOUNT")}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all ${
                   filterTab === "DISCOUNT"
-                    ? "bg-[#2E5E8C] text-white"
-                    : "bg-white border border-[#E3DBC9] text-[#6B6157] hover:bg-[#EFEAE0]"
+                    ? "bg-[#FF5A5F] text-white shadow-sm"
+                    : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
                 }`}
               >
-                Discount Path
+                ✨ Surprise Magic Bags ({stats.discountCount})
+              </button>
+              <button
+                onClick={() => setFilterTab("DONATE")}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all ${
+                  filterTab === "DONATE"
+                    ? "bg-[#00CC88] text-white shadow-sm"
+                    : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+                }`}
+              >
+                🎁 Free NGO Donations ({stats.donateCount})
               </button>
             </div>
 
-            <span className="text-xs text-[#6B6157]">
-              Click any row to open details drawer
+            <span className="text-xs text-slate-500 font-medium">
+              Click any row to confirm customer/shelter pickup handover
             </span>
           </div>
 
-          {/* Table View */}
+          {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-[#E3DBC9] bg-[#EFEAE0]/40 text-[11px] font-semibold text-[#6B6157] uppercase tracking-wider">
-                  <th className="py-3 px-6">Food Batch</th>
-                  <th className="py-3 px-4">Outcome</th>
-                  <th className="py-3 px-4">Qty / Unit</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Deadline</th>
-                  <th className="py-3 px-6 text-right">Details</th>
+                <tr className="border-b border-slate-100 bg-[#004F38]/5 text-[11px] font-extrabold text-[#004F38] uppercase tracking-wider">
+                  <th className="py-3.5 px-6">Surplus Food Batch</th>
+                  <th className="py-3.5 px-4">Outcome Path</th>
+                  <th className="py-3.5 px-4">Units Available</th>
+                  <th className="py-3.5 px-4">Live Status</th>
+                  <th className="py-3.5 px-4">Collection Window</th>
+                  <th className="py-3.5 px-6 text-right">Handover</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E3DBC9] text-xs text-[#211D19]">
+              <tbody className="divide-y divide-slate-100 text-xs text-[#0F172A]">
                 {filteredListings.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-12 text-center text-[#6B6157]">
-                      No surplus food listed yet. Click <strong>"+ New Listing"</strong> to post your first surplus batch.
+                    <td colSpan={6} className="py-12 text-center text-slate-500">
+                      No active surplus listed yet. Click <strong>"+ Release Surprise Bag"</strong> to post unsold inventory in 30 seconds.
                     </td>
                   </tr>
                 ) : (
@@ -216,11 +224,11 @@ export const BusinessConsoleClient: React.FC<BusinessConsoleClientProps> = ({
                     <tr
                       key={item.id}
                       onClick={() => setSelectedListing(item)}
-                      className="hover:bg-[#F5F1E8]/50 transition-colors cursor-pointer group"
+                      className="hover:bg-[#FAF9F6] transition-colors cursor-pointer group"
                     >
                       <td className="py-4 px-6 font-medium">
-                        <div className="font-semibold text-[#211D19]">{item.foodType}</div>
-                        <div className="text-[11px] text-[#6B6157]">{item.condition}</div>
+                        <div className="font-extrabold text-[#004F38] text-sm">{item.foodType}</div>
+                        <div className="text-[11px] text-slate-500 font-medium">{item.condition}</div>
                       </td>
 
                       <td className="py-4 px-4">
@@ -232,15 +240,15 @@ export const BusinessConsoleClient: React.FC<BusinessConsoleClientProps> = ({
                         />
                       </td>
 
-                      <td className="py-4 px-4 font-semibold tabular-nums">
+                      <td className="py-4 px-4 font-bold tabular-nums text-sm text-[#004F38]">
                         {item.quantity} {item.unit}
                       </td>
 
                       <td className="py-4 px-4">
-                        <StatusPill status={item.status} />
+                        <StatusPill status={item.status} quantityLeft={item.quantity} />
                       </td>
 
-                      <td className="py-4 px-4 text-[#B8862B] font-medium">
+                      <td className="py-4 px-4 text-[#FF5A5F] font-bold">
                         <div className="flex items-center gap-1">
                           <Clock className="w-3.5 h-3.5" />
                           {new Date(item.collectionDeadline).toLocaleTimeString([], {
@@ -250,8 +258,8 @@ export const BusinessConsoleClient: React.FC<BusinessConsoleClientProps> = ({
                         </div>
                       </td>
 
-                      <td className="py-4 px-6 text-right text-[#6B6157] group-hover:text-[#B84A16]">
-                        <ChevronRight className="w-4 h-4 inline-block" />
+                      <td className="py-4 px-6 text-right text-slate-400 group-hover:text-[#00CC88]">
+                        <ChevronRight className="w-5 h-5 inline-block" />
                       </td>
                     </tr>
                   ))
@@ -278,3 +286,4 @@ export const BusinessConsoleClient: React.FC<BusinessConsoleClientProps> = ({
     </div>
   );
 };
+

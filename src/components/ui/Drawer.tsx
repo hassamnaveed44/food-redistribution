@@ -48,7 +48,7 @@ export const Drawer: React.FC<DrawerProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/30 backdrop-blur-xs"
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm"
             onClick={onClose}
           />
 
@@ -57,17 +57,17 @@ export const Drawer: React.FC<DrawerProps> = ({
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "100%", opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className={`relative w-full ${widthClasses[width]} h-full bg-white shadow-2xl border-l border-[#E3DBC9] flex flex-col z-10`}
+            className={`relative w-full ${widthClasses[width]} h-full bg-white shadow-2xl border-l border-slate-200 flex flex-col z-10`}
           >
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E3DBC9] bg-[#F5F1E8]">
+            <div className="flex items-center justify-between px-6 py-4.5 border-b border-slate-100 bg-[#004F38] text-white">
               {title && (
-                <h2 className="text-lg font-semibold text-[#211D19]">
+                <h2 className="text-lg font-bold text-white tracking-tight">
                   {title}
                 </h2>
               )}
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-[#6B6157] hover:text-[#211D19] hover:bg-[#EFEAE0] transition-colors ml-auto"
+                className="p-1.5 rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-colors ml-auto"
               >
                 <X className="w-5 h-5" />
               </button>

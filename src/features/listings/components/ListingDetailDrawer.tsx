@@ -12,8 +12,11 @@ import {
   Building2,
   Phone,
   CheckCircle2,
-  Calendar,
   AlertCircle,
+  QrCode,
+  Sparkles,
+  ShieldCheck,
+  PackageCheck,
 } from "lucide-react";
 
 export interface ListingDetailDrawerProps {
@@ -89,99 +92,106 @@ export const ListingDetailDrawer: React.FC<ListingDetailDrawerProps> = ({
     }
   };
 
+  const pickupCode = `RESCUE-${listing.id.slice(0, 6).toUpperCase()}`;
+
   return (
-    <Drawer isOpen={isOpen} onClose={onClose} title="Surplus Batch Details" width="md">
+    <Drawer isOpen={isOpen} onClose={onClose} title="Surplus Food & Magic Bag Pass" width="md">
       <div className="flex flex-col gap-6">
         {/* Header Badges */}
-        <div className="flex items-center justify-between bg-[#F5F1E8] p-4 rounded-xl border border-[#E3DBC9]">
+        <div className="flex items-center justify-between bg-[#FAF9F6] p-4 rounded-2xl border border-slate-200 shadow-sm">
           <OutcomeBadge
             outcome={listing.outcome}
             originalPrice={listing.originalPrice}
             discountPrice={listing.discountPrice}
             unit={listing.unit}
           />
-          <StatusPill status={listing.status} />
+          <StatusPill status={listing.status} quantityLeft={listing.quantity} />
         </div>
 
-        {/* Listing Title & Specs */}
-        <div>
-          <h2 className="font-serif text-xl font-semibold text-[#211D19] mb-1">
-            {listing.foodType}
-          </h2>
-          <p className="text-xs text-[#6B6157]">
-            Batch ID: <code className="font-mono">{listing.id.slice(0, 8)}</code>
-          </p>
-        </div>
-
-        {/* Info Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-3 bg-white rounded-lg border border-[#E3DBC9]">
-            <span className="text-[11px] text-[#6B6157] block">Quantity</span>
-            <span className="text-sm font-semibold text-[#211D19]">
-              {listing.quantity} {listing.unit}
-            </span>
+        {/* Digital Pickup Voucher Pass */}
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-[#004F38] to-[#002D2B] text-white shadow-xl relative overflow-hidden">
+          <div className="flex justify-between items-start mb-3">
+            <div>
+              <span className="text-[10px] uppercase font-black tracking-widest text-[#00CC88] block mb-1">
+                DIGITAL PICKUP VOUCHER
+              </span>
+              <h3 className="text-2xl font-extrabold tracking-tight text-white">
+                {listing.foodType}
+              </h3>
+            </div>
+            <QrCode className="w-10 h-10 text-[#00CC88] shrink-0" />
           </div>
 
-          <div className="p-3 bg-white rounded-lg border border-[#E3DBC9]">
-            <span className="text-[11px] text-[#6B6157] block">Collection Deadline</span>
-            <span className="text-xs font-semibold text-[#B8862B] flex items-center gap-1 mt-0.5">
+          <div className="my-4 py-3 px-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-between">
+            <span className="text-xs text-emerald-100/80 font-medium">Pickup Token Code:</span>
+            <code className="text-base font-mono font-black text-[#FFC72C] tracking-wider">
+              {pickupCode}
+            </code>
+          </div>
+
+          <div className="flex items-center justify-between text-xs text-emerald-100/90 pt-2 border-t border-white/10">
+            <span className="flex items-center gap-1 font-bold text-[#FF5A5F]">
               <Clock className="w-3.5 h-3.5" />
-              {new Date(listing.collectionDeadline).toLocaleTimeString([], {
+              Deadline: {new Date(listing.collectionDeadline).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
               })}
             </span>
+            <span className="font-extrabold text-white">
+              {listing.quantity} {listing.unit}
+            </span>
           </div>
         </div>
 
-        {/* Condition & Location */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-start gap-2 text-xs text-[#211D19]">
-            <Building2 className="w-4 h-4 text-[#6B6157] shrink-0 mt-0.5" />
+        {/* Store & Location Details */}
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col gap-3">
+          <div className="flex items-start gap-2.5 text-xs text-[#0F172A]">
+            <Building2 className="w-4 h-4 text-[#FF5A5F] shrink-0 mt-0.5" />
             <div>
-              <span className="font-medium block">
+              <span className="font-extrabold text-sm block text-[#004F38]">
                 {listing.businessName || "Artisan Crumbs Bakery"}
               </span>
-              <span className="text-[#6B6157]">
+              <span className="text-slate-600 font-medium flex items-center gap-1 mt-0.5">
+                <MapPin className="w-3.5 h-3.5 text-[#00CC88]" />
                 {listing.address || "124 Market Street, Downtown"}
               </span>
             </div>
           </div>
 
-          <div className="p-3 rounded-lg bg-[#EFEAE0]/50 border border-[#E3DBC9] text-xs text-[#6B6157]">
-            <strong className="text-[#211D19] font-medium block mb-0.5">
-              Food Condition & Packaging:
+          <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-slate-200 text-xs text-slate-600">
+            <strong className="text-[#004F38] font-bold block mb-1">
+              Food Condition & Packaging Notes:
             </strong>
             {listing.condition}
           </div>
         </div>
 
-        {/* Claim / Handover Details */}
+        {/* Claimant Info */}
         {listing.claimRequest ? (
-          <div className="p-4 rounded-xl border border-[#25423A]/30 bg-[#25423A]/5">
-            <h3 className="font-semibold text-xs text-[#25423A] uppercase tracking-wider mb-2">
-              Matched Claimant
+          <div className="p-4 rounded-2xl border border-[#00CC88]/40 bg-emerald-50/60 shadow-sm">
+            <h3 className="font-bold text-xs text-[#004F38] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-[#00CC88]" /> Matched Recipient
             </h3>
-            <div className="text-xs text-[#211D19]">
-              <span className="font-semibold block text-sm">
-                {listing.claimRequest.ngoName || listing.claimRequest.buyerName || "Matched Recipient"}
+            <div className="text-xs text-[#0F172A]">
+              <span className="font-extrabold block text-sm text-[#004F38]">
+                {listing.claimRequest.ngoName || listing.claimRequest.buyerName || "Verified Recipient"}
               </span>
               {listing.claimRequest.buyerContact && (
-                <span className="text-[#6B6157] flex items-center gap-1 mt-1">
+                <span className="text-slate-600 flex items-center gap-1 mt-1 font-medium">
                   <Phone className="w-3.5 h-3.5" /> {listing.claimRequest.buyerContact}
                 </span>
               )}
             </div>
           </div>
         ) : (
-          <div className="p-4 rounded-xl border border-[#E3DBC9] bg-[#F5F1E8]/40 text-xs text-[#6B6157] flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-[#B8862B]" />
-            <span>No claim request submitted yet. Listing is open for discovery.</span>
+          <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 text-xs text-slate-600 flex items-center gap-2 font-medium">
+            <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
+            <span>Surplus bag is active & open for discovery near you.</span>
           </div>
         )}
 
         {/* Action Controls */}
-        <div className="flex flex-col gap-2 pt-4 border-t border-[#E3DBC9] mt-auto">
+        <div className="flex flex-col gap-2 pt-4 border-t border-slate-200 mt-auto">
           {listing.status === "OPEN" && onCancelListing && (
             <Button
               variant="danger"
@@ -197,19 +207,19 @@ export const ListingDetailDrawer: React.FC<ListingDetailDrawerProps> = ({
           {(listing.status === "MATCHED" || listing.status === "SCHEDULED" || listing.status === "REQUESTED") &&
             onConfirmHandover && (
               <Button
-                variant="primary"
+                variant="donate"
                 size="lg"
                 onClick={handleConfirm}
                 isLoading={isProcessing}
-                className="w-full"
+                className="w-full font-bold shadow-lg"
               >
-                <CheckCircle2 className="w-4 h-4 mr-2" /> Confirm Pickup & Handover
+                <CheckCircle2 className="w-5 h-5 mr-2" /> Confirm Customer Handover
               </Button>
             )}
 
           {listing.status === "CONFIRMED" && (
-            <div className="p-3 rounded-lg bg-[#EBF5EE] text-[#1B4D2E] text-xs text-center font-medium border border-[#C5E6D0]">
-              ✓ Pickup Handover Confirmed & Recorded in Impact History
+            <div className="p-3.5 rounded-xl bg-[#004F38] text-white text-xs text-center font-bold shadow-md flex items-center justify-center gap-2">
+              <PackageCheck className="w-4 h-4 text-[#00CC88]" /> Handover Confirmed & Recorded in Impact History
             </div>
           )}
         </div>
@@ -217,3 +227,4 @@ export const ListingDetailDrawer: React.FC<ListingDetailDrawerProps> = ({
     </Drawer>
   );
 };
+

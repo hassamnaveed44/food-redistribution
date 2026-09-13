@@ -7,7 +7,7 @@ import { Select } from "@/components/ui/Select";
 import { Button } from "@/components/ui/Button";
 import { OutcomeBadge } from "@/components/shared/OutcomeBadge";
 import { createListingAction } from "@/features/listings/actions/createListing";
-import { Gift, Tag, Clock, ArrowRight, ArrowLeft, Check } from "lucide-react";
+import { Gift, Tag, Clock, ArrowRight, ArrowLeft, Check, Sparkles, ShoppingBag, Utensils } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface CreateListingModalProps {
@@ -25,15 +25,63 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
-    foodType: "",
-    quantity: 10,
-    unit: "portions",
-    condition: "Freshly baked / packaged today",
-    outcome: "DONATE" as "DONATE" | "DISCOUNT",
-    originalPrice: 15.0,
-    discountPrice: 5.0,
+    foodType: "Bakery Surplus Magic Bag",
+    quantity: 5,
+    unit: "bags",
+    condition: "Freshly baked today, safe sealed packaging",
+    outcome: "DISCOUNT" as "DONATE" | "DISCOUNT",
+    originalPrice: 18.5,
+    discountPrice: 6.0,
     deadlineHours: 2,
   });
+
+  const applyPreset = (preset: "BAKERY" | "MEAL" | "PRODUCE" | "DONATION") => {
+    if (preset === "BAKERY") {
+      setFormData({
+        foodType: "Bakery Surplus Surprise Bag",
+        quantity: 5,
+        unit: "bags",
+        condition: "Assorted sourdough bread, croissants & artisan pastries",
+        outcome: "DISCOUNT",
+        originalPrice: 18.5,
+        discountPrice: 6.0,
+        deadlineHours: 2,
+      });
+    } else if (preset === "MEAL") {
+      setFormData({
+        foodType: "Gourmet Prepared Meal Box",
+        quantity: 4,
+        unit: "boxes",
+        condition: "Refrigerated prepared meals, grain bowls & wraps",
+        outcome: "DISCOUNT",
+        originalPrice: 24.0,
+        discountPrice: 7.5,
+        deadlineHours: 3,
+      });
+    } else if (preset === "PRODUCE") {
+      setFormData({
+        foodType: "Fresh Produce & Grocery Mystery Crate",
+        quantity: 3,
+        unit: "crates",
+        condition: "Fresh seasonal fruits, vegetables & organic greens",
+        outcome: "DISCOUNT",
+        originalPrice: 15.0,
+        discountPrice: 5.0,
+        deadlineHours: 4,
+      });
+    } else if (preset === "DONATION") {
+      setFormData({
+        foodType: "Prepared Meals Donation Batch",
+        quantity: 30,
+        unit: "portions",
+        condition: "Freshly prepared warm meals, ready for shelter distribution",
+        outcome: "DONATE",
+        originalPrice: 0,
+        discountPrice: 0,
+        deadlineHours: 2,
+      });
+    }
+  };
 
   const handleNext = () => {
     if (step === 1 && !formData.foodType) {
@@ -76,37 +124,78 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Create Surplus Food Listing" maxWidth="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title="Release Surplus Food or Magic Bag" maxWidth="lg">
+      {/* 1-Tap Quick Presets Banner */}
+      <div className="mb-6 p-4 rounded-xl bg-[#FAF9F6] border border-slate-200">
+        <span className="text-xs font-extrabold text-[#004F38] uppercase tracking-wider block mb-2 flex items-center gap-1.5">
+          <Sparkles className="w-4 h-4 text-[#FF5A5F]" /> 1-Tap Surprise Magic Bag Presets
+        </span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <button
+            type="button"
+            onClick={() => applyPreset("BAKERY")}
+            className="p-2.5 rounded-lg bg-white border border-slate-200 hover:border-[#FF5A5F] text-left transition-all shadow-xs"
+          >
+            <span className="text-xs font-bold text-[#004F38] block">🥐 Bakery Bag</span>
+            <span className="text-[10px] text-[#FF5A5F] font-black">$18.50 → $6.00</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => applyPreset("MEAL")}
+            className="p-2.5 rounded-lg bg-white border border-slate-200 hover:border-[#FF5A5F] text-left transition-all shadow-xs"
+          >
+            <span className="text-xs font-bold text-[#004F38] block">🍱 Meal Box</span>
+            <span className="text-[10px] text-[#FF5A5F] font-black">$24.00 → $7.50</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => applyPreset("PRODUCE")}
+            className="p-2.5 rounded-lg bg-white border border-slate-200 hover:border-[#FF5A5F] text-left transition-all shadow-xs"
+          >
+            <span className="text-xs font-bold text-[#004F38] block">🍏 Produce Crate</span>
+            <span className="text-[10px] text-[#FF5A5F] font-black">$15.00 → $5.00</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => applyPreset("DONATION")}
+            className="p-2.5 rounded-lg bg-white border border-slate-200 hover:border-[#00CC88] text-left transition-all shadow-xs"
+          >
+            <span className="text-xs font-bold text-[#004F38] block">🎁 Free NGO</span>
+            <span className="text-[10px] text-[#00CC88] font-black">100% Free</span>
+          </button>
+        </div>
+      </div>
+
       {/* Progress Indicators */}
-      <div className="flex items-center justify-between mb-6 border-b border-[#E3DBC9] pb-3">
+      <div className="flex items-center justify-between mb-6 border-b border-slate-200 pb-3">
         <div
-          className={`flex items-center gap-2 text-xs font-medium ${
-            step === 1 ? "text-[#B84A16]" : "text-[#6B6157]"
+          className={`flex items-center gap-2 text-xs font-bold ${
+            step === 1 ? "text-[#004F38]" : "text-slate-400"
           }`}
         >
-          <span className="w-5 h-5 rounded-full bg-[#EFEAE0] flex items-center justify-center text-[10px]">
+          <span className="w-6 h-6 rounded-full bg-[#004F38] text-white flex items-center justify-center text-xs">
             1
           </span>
           <span>1. Food Details</span>
         </div>
-        <div className="w-8 h-[1px] bg-[#E3DBC9]" />
+        <div className="w-8 h-[2px] bg-slate-200" />
         <div
-          className={`flex items-center gap-2 text-xs font-medium ${
-            step === 2 ? "text-[#B84A16]" : "text-[#6B6157]"
+          className={`flex items-center gap-2 text-xs font-bold ${
+            step === 2 ? "text-[#004F38]" : "text-slate-400"
           }`}
         >
-          <span className="w-5 h-5 rounded-full bg-[#EFEAE0] flex items-center justify-center text-[10px]">
+          <span className="w-6 h-6 rounded-full bg-[#004F38] text-white flex items-center justify-center text-xs">
             2
           </span>
           <span>2. Outcome Choice</span>
         </div>
-        <div className="w-8 h-[1px] bg-[#E3DBC9]" />
+        <div className="w-8 h-[2px] bg-slate-200" />
         <div
-          className={`flex items-center gap-2 text-xs font-medium ${
-            step === 3 ? "text-[#B84A16]" : "text-[#6B6157]"
+          className={`flex items-center gap-2 text-xs font-bold ${
+            step === 3 ? "text-[#004F38]" : "text-slate-400"
           }`}
         >
-          <span className="w-5 h-5 rounded-full bg-[#EFEAE0] flex items-center justify-center text-[10px]">
+          <span className="w-6 h-6 rounded-full bg-[#004F38] text-white flex items-center justify-center text-xs">
             3
           </span>
           <span>3. Pickup Deadline</span>
@@ -124,8 +213,8 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
             className="flex flex-col gap-4"
           >
             <Input
-              label="Food Type / Description"
-              placeholder="e.g. Artisan Sourdough Bread & Croissants"
+              label="Surplus Bag / Food Item Name"
+              placeholder="e.g. Bakery Surplus Surprise Bag"
               value={formData.foodType}
               onChange={(e) => setFormData({ ...formData, foodType: e.target.value })}
               required
@@ -133,7 +222,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="Quantity"
+                label="Quantity Available"
                 type="number"
                 min={1}
                 value={formData.quantity}
@@ -143,21 +232,21 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
               />
 
               <Select
-                label="Unit"
+                label="Unit Type"
                 value={formData.unit}
                 onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
                 options={[
+                  { value: "bags", label: "Surprise Bags" },
                   { value: "portions", label: "Portions / Meals" },
                   { value: "kg", label: "Kilograms (kg)" },
                   { value: "boxes", label: "Boxes / Crates" },
-                  { value: "loaves", label: "Loaves / Items" },
                 ]}
               />
             </div>
 
             <Input
-              label="Food Condition / Storage Notes"
-              placeholder="e.g. Freshly prepared, stored in temperature control"
+              label="Condition / Allergen / Packaging Notes"
+              placeholder="e.g. Freshly baked, stored in temperature control, contains gluten/dairy"
               value={formData.condition}
               onChange={(e) => setFormData({ ...formData, condition: e.target.value })}
             />
@@ -173,61 +262,58 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
             transition={{ duration: 0.2 }}
             className="flex flex-col gap-4"
           >
-            <label className="text-xs font-semibold text-[#211D19]">
+            <label className="text-xs font-bold text-[#004F38] uppercase tracking-wider">
               Choose Listing Outcome Path
             </label>
-            <p className="text-xs text-[#6B6157] -mt-2">
-              Select whether this surplus batch is donated to verified NGOs or offered at a discount.
-            </p>
 
-            <div className="grid grid-cols-2 gap-4 my-2">
-              {/* Donate Option */}
-              <div
-                onClick={() => setFormData({ ...formData, outcome: "DONATE" })}
-                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  formData.outcome === "DONATE"
-                    ? "border-[#25423A] bg-[#25423A]/5 shadow-sm"
-                    : "border-[#E3DBC9] hover:border-[#25423A]/50 bg-white"
-                }`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <OutcomeBadge outcome="DONATE" />
-                  {formData.outcome === "DONATE" && (
-                    <Check className="w-4 h-4 text-[#25423A]" />
-                  )}
-                </div>
-                <h4 className="font-semibold text-sm text-[#211D19]">Donate Surplus</h4>
-                <p className="text-xs text-[#6B6157] mt-1 leading-relaxed">
-                  Matched to verified shelters & NGOs based on capacity and distance.
-                </p>
-              </div>
-
+            <div className="grid grid-cols-2 gap-4 my-1">
               {/* Discount Option */}
               <div
                 onClick={() => setFormData({ ...formData, outcome: "DISCOUNT" })}
                 className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
                   formData.outcome === "DISCOUNT"
-                    ? "border-[#2E5E8C] bg-[#2E5E8C]/5 shadow-sm"
-                    : "border-[#E3DBC9] hover:border-[#2E5E8C]/50 bg-white"
+                    ? "border-[#FF5A5F] bg-red-50/50 shadow-md"
+                    : "border-slate-200 hover:border-[#FF5A5F]/50 bg-white"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <OutcomeBadge outcome="DISCOUNT" showPriceDetails={false} />
                   {formData.outcome === "DISCOUNT" && (
-                    <Check className="w-4 h-4 text-[#2E5E8C]" />
+                    <Check className="w-5 h-5 text-[#FF5A5F]" />
                   )}
                 </div>
-                <h4 className="font-semibold text-sm text-[#211D19]">Discounted Sale</h4>
-                <p className="text-xs text-[#6B6157] mt-1 leading-relaxed">
-                  Offered to public buyers at a reduced rate to recover cost.
+                <h4 className="font-extrabold text-sm text-[#004F38]">Surprise Magic Bag (60-70% Off)</h4>
+                <p className="text-xs text-slate-600 mt-1 leading-relaxed font-medium">
+                  Offered to local food rescuers at a steep discount to recover food value.
+                </p>
+              </div>
+
+              {/* Donate Option */}
+              <div
+                onClick={() => setFormData({ ...formData, outcome: "DONATE" })}
+                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                  formData.outcome === "DONATE"
+                    ? "border-[#00CC88] bg-emerald-50/50 shadow-md"
+                    : "border-slate-200 hover:border-[#00CC88]/50 bg-white"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <OutcomeBadge outcome="DONATE" />
+                  {formData.outcome === "DONATE" && (
+                    <Check className="w-5 h-5 text-[#00CC88]" />
+                  )}
+                </div>
+                <h4 className="font-extrabold text-sm text-[#004F38]">Free NGO Shelter Donation</h4>
+                <p className="text-xs text-slate-600 mt-1 leading-relaxed font-medium">
+                  Matched 100% free to verified local shelters & food banks based on capacity.
                 </p>
               </div>
             </div>
 
             {formData.outcome === "DISCOUNT" && (
-              <div className="p-4 rounded-xl bg-[#F5F1E8] border border-[#E3DBC9] grid grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-[#FAF9F6] border border-slate-200 grid grid-cols-2 gap-4">
                 <Input
-                  label="Original Retail Price ($)"
+                  label="Original Retail Value ($)"
                   type="number"
                   step="0.5"
                   value={formData.originalPrice}
@@ -239,7 +325,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
                   }
                 />
                 <Input
-                  label="Discounted Price ($)"
+                  label="Offer Price ($)"
                   type="number"
                   step="0.5"
                   value={formData.discountPrice}
@@ -265,7 +351,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
             className="flex flex-col gap-4"
           >
             <Select
-              label="Collection Deadline Window"
+              label="Pickup Collection Window"
               value={formData.deadlineHours}
               onChange={(e) =>
                 setFormData({ ...formData, deadlineHours: parseInt(e.target.value) })
@@ -276,12 +362,12 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
                 { value: "4", label: "Within 4 hours" },
                 { value: "8", label: "Today by end of day" },
               ]}
-              helperText="Past-deadline OPEN listings will be automatically flipped to EXPIRED via scheduled cron."
+              helperText="Past-deadline OPEN listings automatically flip to EXPIRED via background cron."
             />
 
-            <div className="p-4 rounded-xl bg-white border border-[#E3DBC9] flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-white border border-slate-200 flex items-center justify-between shadow-sm">
               <div>
-                <span className="text-xs text-[#6B6157] block">Selected Outcome Path</span>
+                <span className="text-xs text-slate-500 font-medium block">Selected Outcome</span>
                 <div className="mt-1">
                   <OutcomeBadge
                     outcome={formData.outcome}
@@ -292,8 +378,8 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
               </div>
 
               <div className="text-right">
-                <span className="text-xs text-[#6B6157] block">Surplus Quantity</span>
-                <span className="text-sm font-semibold text-[#211D19]">
+                <span className="text-xs text-slate-500 font-medium block">Total Units Released</span>
+                <span className="text-sm font-extrabold text-[#004F38]">
                   {formData.quantity} {formData.unit}
                 </span>
               </div>
@@ -303,7 +389,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
       </AnimatePresence>
 
       {/* Modal Actions */}
-      <div className="flex items-center justify-between border-t border-[#E3DBC9] pt-4 mt-6">
+      <div className="flex items-center justify-between border-t border-slate-200 pt-4 mt-6">
         {step > 1 ? (
           <Button variant="secondary" onClick={handleBack} size="sm">
             <ArrowLeft className="w-4 h-4 mr-1" /> Back
@@ -325,10 +411,11 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
             isLoading={isSubmitting}
             size="md"
           >
-            Publish Listing
+            Release Surplus Now
           </Button>
         )}
       </div>
     </Modal>
   );
 };
+
