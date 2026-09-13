@@ -7,7 +7,7 @@ import { PrismaNeonHttp } from "@prisma/adapter-neon";
 async function check() {
   const connectionString = process.env.DATABASE_URL || "";
   console.log("Connecting to Neon DB via HTTP...");
-  const adapter = new PrismaNeonHttp(connectionString);
+  const adapter = new PrismaNeonHttp(connectionString, {} as any);
   const prisma = new PrismaClient({ adapter });
 
   try {

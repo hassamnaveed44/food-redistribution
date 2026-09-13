@@ -12,7 +12,7 @@ import { PrismaNeonHttp } from "@prisma/adapter-neon";
 
 function getPrisma() {
   const connectionString = process.env.DATABASE_URL || "";
-  const adapter = new PrismaNeonHttp(connectionString);
+  const adapter = new PrismaNeonHttp(connectionString, {} as any);
   return new PrismaClient({ adapter });
 }
 

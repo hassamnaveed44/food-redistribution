@@ -10,7 +10,7 @@ function createPrismaClient() {
     process.env.DATABASE_URL ||
     "postgresql://placeholder:placeholder@localhost:5432/placeholder";
 
-  const adapter = new PrismaNeonHttp(connectionString);
+  const adapter = new PrismaNeonHttp(connectionString, {} as any);
 
   return new PrismaClient({
     adapter,
