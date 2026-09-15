@@ -70,7 +70,7 @@ export const VerificationsClient: React.FC<VerificationsClientProps> = ({
                 Admin Verification Queue
               </h1>
               <span className="text-xs text-[#EFEAE0]/70">
-                Screen 10 • Document Review & Org Verification Drawer
+                Document Review & Non-Profit Verification Portal
               </span>
             </div>
           </div>

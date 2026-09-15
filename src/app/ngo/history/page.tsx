@@ -46,7 +46,7 @@ export default async function NgoHistoryPage() {
               <h1 className="font-serif font-semibold text-lg text-[#211D19]">
                 NGO Donation Impact & Request History
               </h1>
-              <span className="text-xs text-[#6B6157]">Screen 8 • Hope Haven Shelter</span>
+              <span className="text-xs text-[#6B6157]">Verified Non-Profit Partner Impact Log</span>
             </div>
           </div>
         </div>

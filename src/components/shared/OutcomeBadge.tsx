@@ -1,5 +1,5 @@
 import React from "react";
-import { Sparkles, Gift, Tag } from "lucide-react";
+import { Sparkles, Gift, Tag, ShoppingBag } from "lucide-react";
 
 export interface OutcomeBadgeProps {
   outcome: "DONATE" | "DISCOUNT";
@@ -31,8 +31,8 @@ export const OutcomeBadge: React.FC<OutcomeBadgeProps> = ({
 
   return (
     <div className="inline-flex items-center gap-2 flex-wrap">
-      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-[#FF5A5F] text-white shadow-sm shadow-red-500/20">
-        <Sparkles className="w-3.5 h-3.5 text-amber-200 animate-pulse" />
+      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FF5A5F] text-white shadow-sm">
+        <ShoppingBag className="w-3.5 h-3.5 text-white" />
         <span>SURPRISE MAGIC BAG</span>
       </div>
 

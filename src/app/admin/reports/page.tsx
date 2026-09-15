@@ -32,7 +32,7 @@ export default async function AdminReportsPage() {
                 Reported Issues & Resolution Workflow
               </h1>
               <span className="text-xs text-[#EFEAE0]/70">
-                Screen 12 • Resolution Drawer & Issue Logs
+                Platform Operations Resolution Logs
               </span>
             </div>
           </div>

@@ -7,6 +7,7 @@ import {
   XCircle,
   CalendarCheck,
   Handshake,
+  ShoppingBag,
 } from "lucide-react";
 
 export type ListingStatus =
@@ -37,10 +38,10 @@ export const StatusPill: React.FC<StatusPillProps> = ({
       if (quantityLeft && quantityLeft <= 3) {
         return (
           <span
-            className={`inline-flex items-center font-extrabold rounded-full bg-[#FF5A5F] text-white animate-pulse shadow-sm ${sizeClasses}`}
+            className={`inline-flex items-center font-bold rounded-full bg-[#FF5A5F] text-white shadow-sm ${sizeClasses}`}
           >
-            <Sparkles className="w-3 h-3 text-amber-200" />
-            <span>🔥 ONLY {quantityLeft} LEFT!</span>
+            <ShoppingBag className="w-3 h-3 text-white" />
+            <span>ONLY {quantityLeft} LEFT</span>
           </span>
         );
       }
@@ -48,8 +49,8 @@ export const StatusPill: React.FC<StatusPillProps> = ({
         <span
           className={`inline-flex items-center font-bold rounded-full bg-[#00CC88]/15 text-[#004F38] border border-[#00CC88]/40 ${sizeClasses}`}
         >
-          <Sparkles className="w-3 h-3 text-[#00CC88]" />
-          <span>PICKUP TODAY</span>
+          <Clock className="w-3 h-3 text-[#004F38]" />
+          <span>AVAILABLE TODAY</span>
         </span>
       );
 

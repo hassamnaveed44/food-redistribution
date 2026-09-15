@@ -54,7 +54,7 @@ export default async function AdminDashboardPage() {
                 Platform Admin Governance Console
               </h1>
               <span className="text-xs text-[#EFEAE0]/70">
-                Screen 9 • System Monitoring & Verification Queue
+                System Monitoring & Platform Governance
               </span>
             </div>
           </div>
@@ -129,7 +129,7 @@ export default async function AdminDashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-6 rounded-2xl bg-white border border-[#E3DBC9]">
             <h3 className="font-serif font-semibold text-lg text-[#211D19] mb-2">
-              Verification Queue (Screen 10)
+              Verification Queue
             </h3>
             <p className="text-xs text-[#6B6157] leading-relaxed mb-4">
               Review 501(c)(3) tax proof and business health permits before granting platform access.
@@ -143,7 +143,7 @@ export default async function AdminDashboardPage() {
 
           <div className="p-6 rounded-2xl bg-white border border-[#E3DBC9]">
             <h3 className="font-serif font-semibold text-lg text-[#211D19] mb-2">
-              Organizations & Listings (Screen 11)
+              Organizations & Listings
             </h3>
             <p className="text-xs text-[#6B6157] leading-relaxed mb-4">
               Tabbed data-table of all registered organizations and platform-wide surplus food batches.
@@ -157,7 +157,7 @@ export default async function AdminDashboardPage() {
 
           <div className="p-6 rounded-2xl bg-white border border-[#E3DBC9]">
             <h3 className="font-serif font-semibold text-lg text-[#211D19] mb-2">
-              Reports & Issues (Screen 12)
+              Reports & Issues
             </h3>
             <p className="text-xs text-[#6B6157] leading-relaxed mb-4">
               Resolution workflow for reported no-show pickups and food-safety concerns.

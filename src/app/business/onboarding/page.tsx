@@ -76,7 +76,7 @@ export default function BusinessOnboardingPage() {
               Food Business Verification
             </h1>
             <p className="text-xs text-[#6B6157]">
-              Screen 3 • Register your restaurant, bakery, or cafeteria profile
+              Register your restaurant, bakery, or cafeteria profile
             </p>
           </div>
         </div>

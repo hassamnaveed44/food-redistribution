@@ -40,20 +40,22 @@ export default async function BusinessReportingPage() {
   const totalDiscountCount = listings.filter((l) => l.outcome === "DISCOUNT").length;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F5F1E8]">
-      <header className="bg-white border-b border-[#E3DBC9] px-6 py-4 sticky top-0 z-30">
+    <div className="min-h-screen flex flex-col bg-[#FAF9F6] text-[#0F172A] overflow-x-hidden w-full max-w-full">
+      <header className="bg-[#004F38] text-white border-b border-emerald-900 px-6 py-4 sticky top-0 z-30 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/business/console">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
                 <ArrowLeft className="w-4 h-4 mr-1" /> Console
               </Button>
             </Link>
             <div>
-              <h1 className="font-serif font-semibold text-lg text-[#211D19]">
-                Business Surplus & Waste Reduction Analytics
+              <h1 className="font-extrabold text-xl text-white tracking-tight flex items-center gap-2">
+                Business Waste Reduction & ESG Audit Report
               </h1>
-              <span className="text-xs text-[#6B6157]">Screen 5 • History & Impact Reports</span>
+              <span className="text-xs text-emerald-200/80 block">
+                Verified Environmental Redistribution History
+              </span>
             </div>
           </div>
         </div>

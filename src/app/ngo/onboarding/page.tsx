@@ -78,7 +78,7 @@ export default function NgoOnboardingPage() {
               NGO & Shelter Verification Setup
             </h1>
             <p className="text-xs text-[#6B6157]">
-              Screen 6 • Register receiving capacity & non-profit verification
+              Register receiving capacity & non-profit verification
             </p>
           </div>
         </div>

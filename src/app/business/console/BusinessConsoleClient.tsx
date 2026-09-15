@@ -64,14 +64,14 @@ export const BusinessConsoleClient: React.FC<BusinessConsoleClientProps> = ({
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF9F6] text-[#0F172A] overflow-x-hidden w-full max-w-full">
       {/* Top Store Manager Console Header */}
-      <header className="bg-[#004F38] text-white border-b border-emerald-900 px-6 py-4 sticky top-0 z-30 shadow-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-[#00CC88] text-[#004F38] flex items-center justify-center font-extrabold text-xl shadow-md">
-              <Building2 className="w-6 h-6" />
+      <header className="bg-[#004F38] text-white border-b border-emerald-900 px-4 sm:px-6 py-4 sticky top-0 z-30 shadow-md">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-xl bg-[#00CC88] text-[#004F38] flex items-center justify-center font-extrabold text-lg sm:text-xl shadow-md">
+              <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
-              <h1 className="font-extrabold text-xl text-white tracking-tight flex items-center gap-2">
+              <h1 className="font-extrabold text-base sm:text-xl text-white tracking-tight flex items-center gap-2 leading-snug">
                 RescueBites Store Partner Console
               </h1>
               <span className="text-xs text-emerald-200/80 block">
@@ -80,20 +80,20 @@ export const BusinessConsoleClient: React.FC<BusinessConsoleClientProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center flex-wrap gap-2.5 w-full sm:w-auto justify-start sm:justify-end pt-1 sm:pt-0 border-t border-emerald-800/60 sm:border-0">
             <Link href="/business/reporting">
-              <Button variant="secondary" size="sm" className="shadow-sm">
-                <BarChart3 className="w-4 h-4 mr-1.5" /> Environmental Reporting
+              <Button variant="secondary" size="sm" className="shadow-sm text-xs py-1.5 px-3">
+                <BarChart3 className="w-3.5 h-3.5 mr-1.5" /> Environmental Reporting
               </Button>
             </Link>
 
             <Button
               variant="donate"
               size="sm"
-              className="shadow-lg font-bold"
+              className="shadow-lg font-bold text-xs py-1.5 px-3"
               onClick={() => setIsModalOpen(true)}
             >
-              <Sparkles className="w-4 h-4 mr-1.5 text-amber-200" /> + Release Surprise Bag
+              <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-200" /> + Release Surprise Bag
             </Button>
           </div>
         </div>

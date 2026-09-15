@@ -128,7 +128,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
       {/* 1-Tap Quick Presets Banner */}
       <div className="mb-6 p-4 rounded-xl bg-[#FAF9F6] border border-slate-200">
         <span className="text-xs font-extrabold text-[#004F38] uppercase tracking-wider block mb-2 flex items-center gap-1.5">
-          <Sparkles className="w-4 h-4 text-[#FF5A5F]" /> 1-Tap Surprise Magic Bag Presets
+          <Sparkles className="w-4 h-4 text-[#FF5A5F]" /> Quick Magic Bag Presets
         </span>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <button
@@ -176,7 +176,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
           <span className="w-6 h-6 rounded-full bg-[#004F38] text-white flex items-center justify-center text-xs">
             1
           </span>
-          <span>1. Food Details</span>
+          <span>Food Details</span>
         </div>
         <div className="w-8 h-[2px] bg-slate-200" />
         <div
@@ -187,7 +187,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
           <span className="w-6 h-6 rounded-full bg-[#004F38] text-white flex items-center justify-center text-xs">
             2
           </span>
-          <span>2. Outcome Choice</span>
+          <span>Outcome Choice</span>
         </div>
         <div className="w-8 h-[2px] bg-slate-200" />
         <div
@@ -198,7 +198,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
           <span className="w-6 h-6 rounded-full bg-[#004F38] text-white flex items-center justify-center text-xs">
             3
           </span>
-          <span>3. Pickup Deadline</span>
+          <span>Pickup Deadline</span>
         </div>
       </div>
 

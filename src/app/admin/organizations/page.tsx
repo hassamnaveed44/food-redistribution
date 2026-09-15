@@ -45,7 +45,7 @@ export default async function AdminOrganizationsPage() {
                 Organizations & Platform-Wide Listings
               </h1>
               <span className="text-xs text-[#EFEAE0]/70">
-                Screen 11 • Tabbed Master Data Table
+                Master Platform Organizations & Surplus Inventory
               </span>
             </div>
           </div>
