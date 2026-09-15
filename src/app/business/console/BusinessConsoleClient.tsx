@@ -20,6 +20,7 @@ import {
   Leaf,
   TrendingUp,
   Flame,
+  CheckCircle2,
 } from "lucide-react";
 
 export interface BusinessConsoleClientProps {
