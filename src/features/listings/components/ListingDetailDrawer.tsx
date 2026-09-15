@@ -204,7 +204,9 @@ export const ListingDetailDrawer: React.FC<ListingDetailDrawerProps> = ({
             </Button>
           )}
 
-          {(listing.status === "MATCHED" || listing.status === "SCHEDULED" || listing.status === "REQUESTED") &&
+          {listing.status !== "CONFIRMED" &&
+            listing.status !== "CANCELLED" &&
+            listing.status !== "EXPIRED" &&
             onConfirmHandover && (
               <Button
                 variant="donate"
@@ -213,7 +215,7 @@ export const ListingDetailDrawer: React.FC<ListingDetailDrawerProps> = ({
                 isLoading={isProcessing}
                 className="w-full font-bold shadow-lg"
               >
-                <CheckCircle2 className="w-5 h-5 mr-2" /> Confirm Customer Handover
+                <CheckCircle2 className="w-5 h-5 mr-2" /> Confirm Customer / Shelter Handover
               </Button>
             )}
 
