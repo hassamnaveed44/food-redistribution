@@ -11,42 +11,18 @@ export async function POST(
     const { id: listingId } = await params;
     const body = await req.json().catch(() => ({}));
 
-    // Perform optimistic concurrency transaction
-    const result = await prisma.$transaction(async (tx) => {
-      // Guard against double-allocation race condition
-      const updated = await tx.listing.updateMany({
-        where: {
-          id: listingId,
-          status: "OPEN",
-        },
-        data: {
-          status: "MATCHED",
-        },
-      });
-
-      if (updated.count === 0) {
-        return null;
-      }
-
-      // Update claim request status to ACCEPTED
-      const claim = await tx.claimRequest.updateMany({
-        where: { listingId },
-        data: { status: "ACCEPTED" },
-      });
-
-      // Record status history
-      await tx.statusHistory.create({
-        data: {
-          listingId,
-          fromStatus: "OPEN",
-          toStatus: "MATCHED",
-        },
-      });
-
-      return claim;
+    // Guard against double-allocation race condition
+    const updated = await prisma.listing.updateMany({
+      where: {
+        id: listingId,
+        status: "OPEN",
+      },
+      data: {
+        status: "MATCHED",
+      },
     });
 
-    if (!result) {
+    if (updated.count === 0) {
       return NextResponse.json(
         {
           error: "409_LISTING_ALREADY_CLAIMED",
@@ -55,6 +31,21 @@ export async function POST(
         { status: 409 }
       );
     }
+
+    // Update claim request status to ACCEPTED
+    await prisma.claimRequest.updateMany({
+      where: { listingId },
+      data: { status: "ACCEPTED" },
+    });
+
+    // Record status history
+    await prisma.statusHistory.create({
+      data: {
+        listingId,
+        fromStatus: "OPEN",
+        toStatus: "MATCHED",
+      },
+    });
 
     return NextResponse.json({
       success: true,

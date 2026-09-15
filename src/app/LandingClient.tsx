@@ -41,28 +41,35 @@ export function LandingClient({ initialListings = [], stats }: LandingClientProp
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF9F6] text-[#0F172A] overflow-x-hidden w-full max-w-full">
       {/* Top Navbar */}
-      <header className="border-b border-emerald-950/20 bg-[#004F38] text-white px-6 py-4 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-[#00CC88] flex items-center justify-center text-white font-extrabold text-xl shadow-md group-hover:scale-105 transition-transform">
-              <Leaf className="w-6 h-6 text-[#004F38]" />
+      <header className="border-b border-emerald-950/20 bg-[#004F38] text-white px-3.5 sm:px-6 py-3 sm:py-4 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#00CC88] flex items-center justify-center text-white font-extrabold text-lg sm:text-xl shadow-md group-hover:scale-105 transition-transform shrink-0">
+              <Leaf className="w-4 h-4 sm:w-6 sm:h-6 text-[#004F38]" />
             </div>
             <div>
-              <span className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1.5">
-                RescueBites <span className="text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#00CC88] text-[#004F38] font-extrabold">TGTG Edition</span>
-              </span>
-              <span className="text-xs text-emerald-200/80 block -mt-0.5 font-medium">
+              <div className="flex items-center gap-1.5">
+                <span className="font-extrabold text-base sm:text-xl tracking-tight text-white leading-tight">
+                  RescueBites
+                </span>
+                <span className="hidden xs:inline-block text-[9px] sm:text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#00CC88] text-[#004F38] font-extrabold">
+                  TGTG Edition
+                </span>
+              </div>
+              <span className="text-[10px] sm:text-xs text-emerald-200/80 hidden sm:block -mt-0.5 font-medium">
                 Surplus Food & Magic Bag Network
               </span>
             </div>
           </Link>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 shrink-0">
             {isSignedIn ? (
               <>
                 <Link href="/redirect">
-                  <Button variant="donate" size="sm" className="shadow-md hover:scale-105 transition-transform">
-                    <LayoutDashboard className="w-4 h-4 mr-1.5" /> Go to Console
+                  <Button variant="donate" size="sm" className="shadow-md hover:scale-105 transition-transform text-xs px-2.5 sm:px-3 py-1.5">
+                    <LayoutDashboard className="w-3.5 h-3.5 sm:mr-1.5" />
+                    <span className="hidden xs:inline">Go to Console</span>
+                    <span className="xs:hidden">Console</span>
                   </Button>
                 </Link>
                 <UserButton />
@@ -70,13 +77,13 @@ export function LandingClient({ initialListings = [], stats }: LandingClientProp
             ) : (
               <>
                 <Link href="/sign-in">
-                  <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
+                  <Button variant="ghost" size="sm" className="text-white hover:bg-white/10 text-xs px-2 sm:px-3 py-1.5">
                     Sign In
                   </Button>
                 </Link>
                 <Link href="/sign-up">
-                  <Button variant="donate" size="sm" className="shadow-md hover:scale-105 transition-transform">
-                    Join the Movement
+                  <Button variant="donate" size="sm" className="shadow-md hover:scale-105 transition-transform text-xs px-2.5 sm:px-3 py-1.5">
+                    Join
                   </Button>
                 </Link>
               </>
