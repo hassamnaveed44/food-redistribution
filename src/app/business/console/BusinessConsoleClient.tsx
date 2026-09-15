@@ -62,7 +62,7 @@ export const BusinessConsoleClient: React.FC<BusinessConsoleClientProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF9F6] text-[#0F172A]">
+    <div className="min-h-screen flex flex-col bg-[#FAF9F6] text-[#0F172A] overflow-x-hidden w-full max-w-full">
       {/* Top Store Manager Console Header */}
       <header className="bg-[#004F38] text-white border-b border-emerald-900 px-6 py-4 sticky top-0 z-30 shadow-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">

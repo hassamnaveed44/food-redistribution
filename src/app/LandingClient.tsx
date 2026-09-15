@@ -22,11 +22,24 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-export function LandingClient() {
+interface LandingClientProps {
+  initialListings?: any[];
+  stats?: {
+    totalUsers: number;
+    totalRescuedKg: number;
+    co2OffsetKg: number;
+  };
+}
+
+export function LandingClient({ initialListings = [], stats }: LandingClientProps) {
   const { isSignedIn } = useUser();
 
+  const activeRescuedKg = stats?.totalRescuedKg || 450;
+  const activeCo2 = stats?.co2OffsetKg || 1125;
+  const activeUsers = stats?.totalUsers || 150;
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF9F6] text-[#0F172A]">
+    <div className="min-h-screen flex flex-col bg-[#FAF9F6] text-[#0F172A] overflow-x-hidden w-full max-w-full">
       {/* Top Navbar */}
       <header className="border-b border-emerald-950/20 bg-[#004F38] text-white px-6 py-4 sticky top-0 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -112,21 +125,21 @@ export function LandingClient() {
           >
             <div className="flex flex-col items-center">
               <span className="text-2xl md:text-3xl font-extrabold text-[#00CC88] flex items-center gap-1">
-                <TrendingUp className="w-5 h-5 text-[#FFC72C]" /> 18,450+ kg
+                <TrendingUp className="w-5 h-5 text-[#FFC72C]" /> {activeRescuedKg}+ kg
               </span>
               <span className="text-xs text-emerald-100/80 font-semibold uppercase tracking-wider mt-1">Food Rescued</span>
             </div>
             <div className="flex flex-col items-center border-y sm:border-y-0 sm:border-x border-white/15 py-3 sm:py-0">
               <span className="text-2xl md:text-3xl font-extrabold text-[#FFC72C] flex items-center gap-1">
-                <Leaf className="w-5 h-5 text-[#00CC88]" /> 46,125 kg
+                <Leaf className="w-5 h-5 text-[#00CC88]" /> {activeCo2} kg
               </span>
-              <span className="text-xs text-emerald-100/80 font-semibold uppercase tracking-wider mt-1">CO₂ Emissions Offset</span>
+              <span className="text-xs text-emerald-100/80 font-semibold uppercase tracking-wider mt-1">CO₂ Offset</span>
             </div>
             <div className="flex flex-col items-center">
               <span className="text-2xl md:text-3xl font-extrabold text-[#FF5A5F] flex items-center gap-1">
-                <HeartHandshake className="w-5 h-5 text-pink-300" /> 14,200+
+                <HeartHandshake className="w-5 h-5 text-pink-300" /> {activeUsers}+
               </span>
-              <span className="text-xs text-emerald-100/80 font-semibold uppercase tracking-wider mt-1">Meals Shared with NGOs</span>
+              <span className="text-xs text-emerald-100/80 font-semibold uppercase tracking-wider mt-1">Active Rescuers</span>
             </div>
           </motion.div>
 
@@ -195,100 +208,112 @@ export function LandingClient() {
             What will you rescue today?
           </h2>
           <p className="text-sm text-slate-600 max-w-xl mx-auto font-medium">
-            Explore active surplus listings near you ready for collection today.
+            Explore live surplus listings fetched in real-time from Neon PostgreSQL.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Sample Card 1 */}
-          <motion.div
-            whileHover={{ y: -4 }}
-            className="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-lg hover:shadow-2xl transition-all"
-          >
-            <div className="bg-[#004F38] p-5 text-white relative">
-              <div className="flex justify-between items-start mb-3">
-                <OutcomeBadge outcome="DISCOUNT" originalPrice={18.5} discountPrice={6.0} />
-                <StatusPill status="OPEN" quantityLeft={2} />
-              </div>
-              <h3 className="font-extrabold text-xl text-white mb-1">Artisan Crumbs Bakery</h3>
-              <p className="text-xs text-emerald-200/90 flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-[#00CC88]" /> 124 Market Street (0.4 km)
-              </p>
-            </div>
-            <div className="p-5">
-              <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                Assorted sourdough loaves, croissants, and gourmet pastries baked fresh this morning.
-              </p>
-              <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs font-bold text-slate-700">
-                <span className="flex items-center gap-1 text-[#FF5A5F]">
-                  <Clock className="w-4 h-4" /> Pickup: 17:00 - 19:00
-                </span>
-                <Link href={isSignedIn ? "/redirect" : "/sign-up"}>
-                  <Button variant="discount" size="sm">Reserve $6.00</Button>
-                </Link>
-              </div>
-            </div>
-          </motion.div>
+          {initialListings.length > 0 ? (
+            initialListings.map((item) => (
+              <motion.div
+                key={item.id}
+                whileHover={{ y: -4 }}
+                className="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-lg hover:shadow-2xl transition-all flex flex-col justify-between"
+              >
+                <div className="bg-[#004F38] p-5 text-white relative">
+                  <div className="flex justify-between items-start mb-3">
+                    <OutcomeBadge
+                      outcome={item.outcome}
+                      originalPrice={item.originalPrice}
+                      discountPrice={item.discountPrice}
+                    />
+                    <StatusPill status={item.status} quantityLeft={item.quantity} />
+                  </div>
+                  <h3 className="font-extrabold text-xl text-white mb-1">{item.foodType}</h3>
+                  <p className="text-xs text-emerald-200/90 flex items-center gap-1">
+                    <Building2 className="w-3.5 h-3.5 text-[#00CC88]" /> {item.businessName}
+                  </p>
+                </div>
+                <div className="p-5 flex-1 flex flex-col justify-between">
+                  <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                    {item.condition} ({item.quantity} {item.unit})
+                  </p>
+                  <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs font-bold text-slate-700">
+                    <span className="flex items-center gap-1 text-[#FF5A5F]">
+                      <Clock className="w-4 h-4" />
+                      Deadline: {new Date(item.collectionDeadline).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                    <Link href={isSignedIn ? "/redirect" : "/sign-up"}>
+                      <Button variant={item.outcome === "DONATE" ? "donate" : "discount"} size="sm">
+                        {item.outcome === "DONATE" ? "Claim Free" : `Reserve $${item.discountPrice || 6.0}`}
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <>
+              {/* Fallback Display */}
+              <motion.div
+                whileHover={{ y: -4 }}
+                className="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-lg hover:shadow-2xl transition-all"
+              >
+                <div className="bg-[#004F38] p-5 text-white relative">
+                  <div className="flex justify-between items-start mb-3">
+                    <OutcomeBadge outcome="DISCOUNT" originalPrice={18.5} discountPrice={6.0} />
+                    <StatusPill status="OPEN" quantityLeft={2} />
+                  </div>
+                  <h3 className="font-extrabold text-xl text-white mb-1">Artisan Crumbs Bakery</h3>
+                  <p className="text-xs text-emerald-200/90 flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-[#00CC88]" /> 124 Market Street (0.4 km)
+                  </p>
+                </div>
+                <div className="p-5">
+                  <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                    Assorted sourdough loaves, croissants, and gourmet pastries baked fresh this morning.
+                  </p>
+                  <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs font-bold text-slate-700">
+                    <span className="flex items-center gap-1 text-[#FF5A5F]">
+                      <Clock className="w-4 h-4" /> Pickup: 17:00 - 19:00
+                    </span>
+                    <Link href={isSignedIn ? "/redirect" : "/sign-up"}>
+                      <Button variant="discount" size="sm">Reserve $6.00</Button>
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
 
-          {/* Sample Card 2 */}
-          <motion.div
-            whileHover={{ y: -4 }}
-            className="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-lg hover:shadow-2xl transition-all"
-          >
-            <div className="bg-[#004F38] p-5 text-white relative">
-              <div className="flex justify-between items-start mb-3">
-                <OutcomeBadge outcome="DONATE" />
-                <StatusPill status="OPEN" />
-              </div>
-              <h3 className="font-extrabold text-xl text-white mb-1">Green Leaf Bistro & Kitchen</h3>
-              <p className="text-xs text-emerald-200/90 flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-[#00CC88]" /> 88 Commerce Boulevard (1.2 km)
-              </p>
-            </div>
-            <div className="p-5">
-              <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                35 portions of prepared quinoa salad boxes and healthy grain bowls ready for shelter distribution.
-              </p>
-              <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs font-bold text-slate-700">
-                <span className="flex items-center gap-1 text-[#004F38]">
-                  <CheckCircle2 className="w-4 h-4 text-[#00CC88]" /> Verified NGO Free
-                </span>
-                <Link href={isSignedIn ? "/redirect" : "/sign-up"}>
-                  <Button variant="donate" size="sm">Claim Free</Button>
-                </Link>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Sample Card 3 */}
-          <motion.div
-            whileHover={{ y: -4 }}
-            className="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-lg hover:shadow-2xl transition-all"
-          >
-            <div className="bg-[#004F38] p-5 text-white relative">
-              <div className="flex justify-between items-start mb-3">
-                <OutcomeBadge outcome="DISCOUNT" originalPrice={24.0} discountPrice={7.5} />
-                <StatusPill status="OPEN" quantityLeft={1} />
-              </div>
-              <h3 className="font-extrabold text-xl text-white mb-1">Urban Grocer & Produce</h3>
-              <p className="text-xs text-emerald-200/90 flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-[#00CC88]" /> 450 5th Avenue (1.8 km)
-              </p>
-            </div>
-            <div className="p-5">
-              <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                Fresh organic fruit basket, artisan cheeses, and gourmet deli salad mystery box.
-              </p>
-              <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs font-bold text-slate-700">
-                <span className="flex items-center gap-1 text-[#FF5A5F]">
-                  <Clock className="w-4 h-4" /> Pickup: 18:30 - 20:00
-                </span>
-                <Link href={isSignedIn ? "/redirect" : "/sign-up"}>
-                  <Button variant="discount" size="sm">Reserve $7.50</Button>
-                </Link>
-              </div>
-            </div>
-          </motion.div>
+              <motion.div
+                whileHover={{ y: -4 }}
+                className="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-lg hover:shadow-2xl transition-all"
+              >
+                <div className="bg-[#004F38] p-5 text-white relative">
+                  <div className="flex justify-between items-start mb-3">
+                    <OutcomeBadge outcome="DONATE" />
+                    <StatusPill status="OPEN" />
+                  </div>
+                  <h3 className="font-extrabold text-xl text-white mb-1">Green Leaf Bistro & Kitchen</h3>
+                  <p className="text-xs text-emerald-200/90 flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-[#00CC88]" /> 88 Commerce Boulevard (1.2 km)
+                  </p>
+                </div>
+                <div className="p-5">
+                  <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                    35 portions of prepared quinoa salad boxes and healthy grain bowls ready for shelter distribution.
+                  </p>
+                  <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs font-bold text-slate-700">
+                    <span className="flex items-center gap-1 text-[#004F38]">
+                      <CheckCircle2 className="w-4 h-4 text-[#00CC88]" /> Verified NGO Free
+                    </span>
+                    <Link href={isSignedIn ? "/redirect" : "/sign-up"}>
+                      <Button variant="donate" size="sm">Claim Free</Button>
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            </>
+          )}
         </div>
       </section>
 
