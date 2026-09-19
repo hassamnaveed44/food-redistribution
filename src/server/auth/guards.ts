@@ -19,12 +19,7 @@ export async function getCurrentUser() {
     const { userId: clerkUserId } = await auth();
 
     if (!clerkUserId) {
-      // Fallback demo user when unauthenticated in local mode
-      const demoUser = await prisma.user.findFirst().catch(() => null);
-      if (!demoUser) return null;
-      const ngoP = await prisma.ngoProfile.findUnique({ where: { userId: demoUser.id } }).catch(() => null);
-      const bizP = await prisma.businessProfile.findUnique({ where: { userId: demoUser.id } }).catch(() => null);
-      return { ...demoUser, ngoProfile: ngoP, businessProfile: bizP };
+      return null;
     }
 
     // 1. Fetch User by clerkUserId (No include to prevent HTTP transaction errors)
