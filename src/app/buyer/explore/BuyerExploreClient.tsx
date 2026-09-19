@@ -42,17 +42,46 @@ export const BuyerExploreClient: React.FC<BuyerExploreClientProps> = ({
     return true;
   });
 
-  const handleRescueBag = async (listingId: string) => {
+  const handleRescueBag = async (
+    listingId: string,
+    claimType: "DONATION" | "PURCHASE" = "PURCHASE"
+  ) => {
     setIsRescuing(true);
     try {
-      await requestClaimAction({
+      const res = await requestClaimAction({
         listingId,
-        claimType: "PURCHASE",
+        claimType,
       });
+
+      const claimReq = {
+        id: res.claimRequest.id,
+        claimType,
+        buyerName: userName || "Eco Rescuer",
+      };
+
       setListings((prev) =>
-        prev.map((l) => (l.id === listingId ? { ...l, status: "REQUESTED" } : l))
+        prev.map((l) =>
+          l.id === listingId
+            ? {
+                ...l,
+                status: "REQUESTED",
+                claimRequest: claimReq,
+              }
+            : l
+        )
       );
-      alert("🎉 Magic Bag Pass Reserved! Present your voucher token code at store pickup.");
+
+      setSelectedListing((prev: any) =>
+        prev && prev.id === listingId
+          ? {
+              ...prev,
+              status: "REQUESTED",
+              claimRequest: claimReq,
+            }
+          : prev
+      );
+
+      alert("🎉 Magic Bag Pass Reserved! Status updated to 'Waiting Approval'. Present your voucher token code at store pickup.");
     } catch (err: any) {
       console.error(err);
       alert(err.message || "Error reserving magic bag");
@@ -230,7 +259,7 @@ export const BuyerExploreClient: React.FC<BuyerExploreClientProps> = ({
                           size="sm"
                           className="flex-1 text-xs py-2 font-bold shadow-md"
                           disabled={isRescuing}
-                          onClick={() => handleRescueBag(item.id)}
+                          onClick={() => handleRescueBag(item.id, item.outcome === "DONATE" ? "DONATION" : "PURCHASE")}
                         >
                           Rescue Bag
                         </Button>
@@ -241,7 +270,9 @@ export const BuyerExploreClient: React.FC<BuyerExploreClientProps> = ({
                           className="flex-1 text-xs py-2 font-bold text-amber-900 bg-amber-50 border border-amber-300 opacity-90 cursor-not-allowed"
                           disabled
                         >
-                          {item.claimRequest?.ngoName ? (
+                          {item.claimRequest?.buyerName ? (
+                            <span>Reserved by {item.claimRequest.buyerName}</span>
+                          ) : item.claimRequest?.ngoName ? (
                             <span>Reserved by {item.claimRequest.ngoName}</span>
                           ) : (
                             <span>⏳ Waiting Approval</span>
@@ -270,6 +301,7 @@ export const BuyerExploreClient: React.FC<BuyerExploreClientProps> = ({
         isOpen={!!selectedListing}
         onClose={() => setSelectedListing(null)}
         listing={selectedListing}
+        onReserveListing={handleRescueBag}
       />
     </div>
   );

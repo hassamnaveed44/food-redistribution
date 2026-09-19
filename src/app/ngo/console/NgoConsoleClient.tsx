@@ -50,22 +50,54 @@ export const NgoConsoleClient: React.FC<NgoConsoleClientProps> = ({
     return true;
   });
 
-  const handleRequestDonation = async (listingId: string) => {
+  const handleReserveListing = async (
+    listingId: string,
+    claimType: "DONATION" | "PURCHASE" = "PURCHASE"
+  ) => {
     setIsRequesting(true);
     try {
-      await requestClaimAction({
+      const res = await requestClaimAction({
         listingId,
-        claimType: "DONATION",
+        claimType,
       });
+
+      const claimReq = {
+        id: res.claimRequest.id,
+        claimType,
+        ngoName: ngoProfile.orgName || userName,
+        buyerName: claimType === "PURCHASE" ? userName : undefined,
+      };
+
       setListings((prev) =>
         prev.map((l) =>
-          l.id === listingId ? { ...l, status: "REQUESTED" } : l
+          l.id === listingId
+            ? {
+                ...l,
+                status: "REQUESTED",
+                claimRequest: claimReq,
+              }
+            : l
         )
       );
-      alert("🎉 Donation claim request submitted! The store manager will confirm your pickup.");
+
+      setSelectedListing((prev: any) =>
+        prev && prev.id === listingId
+          ? {
+              ...prev,
+              status: "REQUESTED",
+              claimRequest: claimReq,
+            }
+          : prev
+      );
+
+      alert(
+        claimType === "DONATION"
+          ? "🎉 Donation claim request submitted! The store manager will confirm your pickup."
+          : "🎉 Magic Bag Reserved! Status updated to 'Waiting Approval'."
+      );
     } catch (err: any) {
       console.error(err);
-      alert(err.message || "Error requesting donation");
+      alert(err.message || "Error reserving bag");
     } finally {
       setIsRequesting(false);
     }
@@ -311,7 +343,7 @@ export const NgoConsoleClient: React.FC<NgoConsoleClientProps> = ({
                         size="sm"
                         className="w-1/2 text-xs"
                         isLoading={isRequesting}
-                        onClick={() => handleRequestDonation(item.id)}
+                        onClick={() => handleReserveListing(item.id, "DONATION")}
                       >
                         Claim Free
                       </Button>
@@ -320,7 +352,8 @@ export const NgoConsoleClient: React.FC<NgoConsoleClientProps> = ({
                         variant="discount"
                         size="sm"
                         className="w-1/2 text-xs"
-                        onClick={() => setSelectedListing(item)}
+                        isLoading={isRequesting}
+                        onClick={() => handleReserveListing(item.id, "PURCHASE")}
                       >
                         Reserve Bag
                       </Button>
@@ -385,8 +418,10 @@ export const NgoConsoleClient: React.FC<NgoConsoleClientProps> = ({
         isOpen={!!selectedListing}
         onClose={() => setSelectedListing(null)}
         listing={selectedListing}
+        onReserveListing={handleReserveListing}
       />
     </div>
   );
 };
+
 

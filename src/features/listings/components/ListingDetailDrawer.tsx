@@ -50,6 +50,7 @@ export interface ListingDetailDrawerProps {
   } | null;
   onConfirmHandover?: (listingId: string) => Promise<void>;
   onCancelListing?: (listingId: string) => Promise<void>;
+  onReserveListing?: (listingId: string, claimType: "DONATION" | "PURCHASE") => Promise<void>;
 }
 
 export const ListingDetailDrawer: React.FC<ListingDetailDrawerProps> = ({
@@ -58,10 +59,27 @@ export const ListingDetailDrawer: React.FC<ListingDetailDrawerProps> = ({
   listing,
   onConfirmHandover,
   onCancelListing,
+  onReserveListing,
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   if (!listing) return null;
+
+  const handleReserve = async () => {
+    if (!onReserveListing) return;
+    setIsProcessing(true);
+    try {
+      await onReserveListing(
+        listing.id,
+        listing.outcome === "DONATE" ? "DONATION" : "PURCHASE"
+      );
+    } catch (err) {
+      console.error(err);
+      alert("Error reserving listing");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const handleConfirm = async () => {
     if (!onConfirmHandover) return;
@@ -218,6 +236,21 @@ export const ListingDetailDrawer: React.FC<ListingDetailDrawerProps> = ({
 
         {/* Action Controls */}
         <div className="flex flex-col gap-2 pt-4 border-t border-slate-200 mt-auto">
+          {listing.status === "OPEN" && onReserveListing && (
+            <Button
+              variant={listing.outcome === "DONATE" ? "donate" : "discount"}
+              size="lg"
+              onClick={handleReserve}
+              isLoading={isProcessing}
+              className="w-full font-bold shadow-lg"
+            >
+              <Sparkles className="w-5 h-5 mr-2" />
+              {listing.outcome === "DONATE"
+                ? "Request Free NGO Donation"
+                : `Reserve Surprise Magic Bag ($${listing.discountPrice || 6.0})`}
+            </Button>
+          )}
+
           {listing.status === "OPEN" && onCancelListing && (
             <Button
               variant="danger"
