@@ -6,15 +6,22 @@ import { NgoConsoleClient } from "./NgoConsoleClient";
 
 export const dynamic = "force-dynamic";
 
+import { redirect } from "next/navigation";
+
 export default async function NgoConsolePage() {
   const user = await requireRole([Role.NGO, Role.ADMIN]);
 
-  const ngoProfile = user?.ngoProfile || {
-    orgName: "Hope Haven Community Shelter",
-    address: "450 5th Avenue, Midtown",
+  if (!user.ngoProfile && user.role !== "ADMIN") {
+    redirect("/ngo/onboarding");
+  }
+
+  const ngoProfile = user.ngoProfile || {
+    id: "admin-ngo",
+    orgName: "Admin NGO Relief Hub",
+    address: "Admin Headquarters",
     latitude: 40.7138,
     longitude: -74.001,
-    receivingCapacity: 150,
+    receivingCapacity: 200,
   };
 
   let matchedListings: any[] = [];
