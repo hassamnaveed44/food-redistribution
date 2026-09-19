@@ -20,18 +20,32 @@ export const RoleSwitcher: React.FC<RoleSwitcherProps> = ({ userRole }) => {
     <div className="inline-flex items-center gap-1.5 p-1 rounded-xl bg-black/20 backdrop-blur-md border border-white/10 text-xs font-bold text-white">
       {/* If inside Business Console */}
       {isBusinessPath && (
-        <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#00CC88] text-[#004F38] shadow-sm font-extrabold">
-          <Building2 className="w-3.5 h-3.5 shrink-0" />
-          <span>Store Manager Portal</span>
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#00CC88] text-[#004F38] shadow-sm font-extrabold">
+            <Building2 className="w-3.5 h-3.5 shrink-0" />
+            <span>Store Manager Portal</span>
+          </span>
+          <Link href="/business/onboarding">
+            <span className="flex items-center gap-1 px-2 py-1 rounded-lg text-emerald-100 hover:bg-white/10 hover:text-white transition-all cursor-pointer text-[11px]">
+              ⚙️ Onboarding / Edit Profile
+            </span>
+          </Link>
+        </div>
       )}
 
       {/* If inside NGO Console */}
       {isNgoPath && (
-        <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#00CC88] text-[#004F38] shadow-sm font-extrabold">
-          <HeartHandshake className="w-3.5 h-3.5 shrink-0" />
-          <span>Verified NGO Portal</span>
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#00CC88] text-[#004F38] shadow-sm font-extrabold">
+            <HeartHandshake className="w-3.5 h-3.5 shrink-0" />
+            <span>Verified NGO Portal</span>
+          </span>
+          <Link href="/ngo/onboarding">
+            <span className="flex items-center gap-1 px-2 py-1 rounded-lg text-emerald-100 hover:bg-white/10 hover:text-white transition-all cursor-pointer text-[11px]">
+              ⚙️ Onboarding / Edit Profile
+            </span>
+          </Link>
+        </div>
       )}
 
       {/* If inside Rescuer Hub */}

@@ -52,30 +52,17 @@ export async function getCurrentUser() {
         console.warn("Clerk user details fetch warning:", syncErr);
       }
 
-      // Check if user already exists in Neon DB by email
-      const existingByEmail = await prisma.user.findUnique({
-        where: { email },
-      }).catch(() => null);
-
-      if (existingByEmail) {
-        // Link existing record to this clerkUserId
-        rawUser = await prisma.user.update({
-          where: { id: existingByEmail.id },
-          data: { clerkUserId, fullName: fullName !== "RescueBites User" ? fullName : existingByEmail.fullName },
-        }).catch(() => existingByEmail);
-      } else {
-        // Create new user row in Neon DB (No include to avoid HTTP transaction error)
-        try {
-          rawUser = await prisma.user.create({
-            data: { clerkUserId, email, fullName, role },
-          });
-        } catch {
-          // If email constraint fails, fallback to unique clerk email
-          const fallbackEmail = `${clerkUserId}@user.rescuebites.com`;
-          rawUser = await prisma.user.create({
-            data: { clerkUserId, email: fallbackEmail, fullName, role },
-          }).catch(() => null);
-        }
+      // Create a fresh, isolated user record in Neon DB for this unique clerkUserId
+      try {
+        rawUser = await prisma.user.create({
+          data: { clerkUserId, email, fullName, role },
+        });
+      } catch {
+        // If email exists from a previous seed/test, generate unique clerk email for this session
+        const uniqueEmail = `${clerkUserId}.${Date.now()}@user.rescuebites.com`;
+        rawUser = await prisma.user.create({
+          data: { clerkUserId, email: uniqueEmail, fullName, role },
+        }).catch(() => null);
       }
     }
 
