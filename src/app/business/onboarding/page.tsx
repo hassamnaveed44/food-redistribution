@@ -135,25 +135,78 @@ export default function BusinessOnboardingPage() {
             }
           />
 
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              label="Latitude (Auto/GPS)"
-              type="number"
-              step="any"
-              value={formData.latitude}
-              onChange={(e) =>
-                setFormData({ ...formData, latitude: parseFloat(e.target.value) })
-              }
-            />
-            <Input
-              label="Longitude (Auto/GPS)"
-              type="number"
-              step="any"
-              value={formData.longitude}
-              onChange={(e) =>
-                setFormData({ ...formData, longitude: parseFloat(e.target.value) })
-              }
-            />
+          <div className="flex flex-col gap-1.5 p-4 rounded-xl bg-[#F5F1E8]/50 border border-[#E3DBC9]">
+            <label className="text-xs font-bold text-[#211D19] flex items-center justify-between">
+              <span>📍 Store GPS Coordinates & City Preset</span>
+              <span className="text-[10px] text-[#B84A16] font-semibold">Select matching city for test NGO discovery</span>
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData({ ...formData, latitude: 40.7128, longitude: -74.006, cityState: "New York, NY 10001" })
+                }
+                className="px-2.5 py-1.5 rounded-lg bg-white border border-[#E3DBC9] text-[11px] font-bold text-[#211D19] hover:bg-[#B84A16] hover:text-white transition-all shadow-sm"
+              >
+                🗽 New York
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData({ ...formData, latitude: 32.5861, longitude: 73.4912, cityState: "Mandi Bahauddin, 50400" })
+                }
+                className="px-2.5 py-1.5 rounded-lg bg-white border border-[#E3DBC9] text-[11px] font-bold text-[#211D19] hover:bg-[#B84A16] hover:text-white transition-all shadow-sm"
+              >
+                📍 Mandi Bahauddin
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData({ ...formData, latitude: 51.5074, longitude: -0.1278, cityState: "London, UK" })
+                }
+                className="px-2.5 py-1.5 rounded-lg bg-white border border-[#E3DBC9] text-[11px] font-bold text-[#211D19] hover:bg-[#B84A16] hover:text-white transition-all shadow-sm"
+              >
+                🎡 London
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition((pos) => {
+                      setFormData({
+                        ...formData,
+                        latitude: Math.round(pos.coords.latitude * 10000) / 10000,
+                        longitude: Math.round(pos.coords.longitude * 10000) / 10000,
+                      });
+                    });
+                  }
+                }}
+                className="px-2.5 py-1.5 rounded-lg bg-white border border-[#E3DBC9] text-[11px] font-bold text-[#211D19] hover:bg-[#B84A16] hover:text-white transition-all shadow-sm"
+              >
+                ⚡ My GPS
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                label="Latitude (Auto/GPS)"
+                type="number"
+                step="any"
+                value={formData.latitude}
+                onChange={(e) =>
+                  setFormData({ ...formData, latitude: parseFloat(e.target.value) })
+                }
+              />
+              <Input
+                label="Longitude (Auto/GPS)"
+                type="number"
+                step="any"
+                value={formData.longitude}
+                onChange={(e) =>
+                  setFormData({ ...formData, longitude: parseFloat(e.target.value) })
+                }
+              />
+            </div>
           </div>
 
           <div className="flex flex-col gap-1.5">
