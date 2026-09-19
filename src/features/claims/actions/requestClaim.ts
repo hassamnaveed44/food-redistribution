@@ -15,6 +15,15 @@ export interface RequestClaimInput {
 export async function requestClaimAction(input: RequestClaimInput) {
   const user = await getCurrentUser();
 
+  // Restriction: 100% Free Food Donations are strictly reserved for verified NGO shelters
+  if (input.claimType === "DONATION") {
+    if (!user || (user.role !== "NGO" && !user.ngoProfile)) {
+      throw new Error(
+        "403 FORBIDDEN: 100% Free Food Donations are exclusively reserved for verified NGO shelters & community kitchens. Individual food rescuers can reserve discounted Surprise Magic Bags."
+      );
+    }
+  }
+
   // Optimistic concurrency check
   const updated = await prisma.listing.updateMany({
     where: {

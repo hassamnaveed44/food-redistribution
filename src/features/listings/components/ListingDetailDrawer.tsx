@@ -263,20 +263,17 @@ export const ListingDetailDrawer: React.FC<ListingDetailDrawerProps> = ({
             </Button>
           )}
 
-          {listing.status !== "CONFIRMED" &&
-            listing.status !== "CANCELLED" &&
-            listing.status !== "EXPIRED" &&
-            onConfirmHandover && (
-              <Button
-                variant="donate"
-                size="lg"
-                onClick={handleConfirm}
-                isLoading={isProcessing}
-                className="w-full font-bold shadow-lg"
-              >
-                <CheckCircle2 className="w-5 h-5 mr-2" /> Confirm Customer / Shelter Handover
-              </Button>
-            )}
+          {listing.status === "REQUESTED" && onConfirmHandover && (
+            <Button
+              variant="donate"
+              size="lg"
+              onClick={handleConfirm}
+              isLoading={isProcessing}
+              className="w-full font-bold shadow-lg animate-pulse"
+            >
+              <CheckCircle2 className="w-5 h-5 mr-2" /> Confirm Customer / Shelter Handover
+            </Button>
+          )}
 
           {listing.status === "CONFIRMED" && (
             <div className="p-3.5 rounded-xl bg-[#004F38] text-white text-xs text-center font-bold shadow-md flex items-center justify-center gap-2">

@@ -1,5 +1,9 @@
 import { prisma } from "@/server/db/prisma";
-import { getBoundingBox, rankMatchedListings } from "@/features/matching/engine";
+import {
+  getBoundingBox,
+  rankMatchedListings,
+  calculateHaversineDistance,
+} from "@/features/matching/engine";
 
 export async function getMatchedListingsForNgo(
   ngoLat: number = 40.7138,
@@ -66,7 +70,10 @@ export async function getMatchedListingsForNgo(
   return rankMatchedListings(candidates as any, ngoLat, ngoLon, ngoCapacity);
 }
 
-export async function getMatchedListingsForBuyer() {
+export async function getMatchedListingsForBuyer(
+  buyerLat: number = 40.7128,
+  buyerLon: number = -74.006
+) {
   const rawListings = await prisma.listing.findMany({
     where: {
       status: {
@@ -85,29 +92,38 @@ export async function getMatchedListingsForBuyer() {
     orderBy: { createdAt: "desc" },
   });
 
-  return rawListings.map((l) => ({
-    id: l.id,
-    foodType: l.foodType,
-    quantity: l.quantity,
-    unit: l.unit,
-    condition: l.condition,
-    outcome: l.outcome,
-    status: l.status,
-    collectionDeadline: l.collectionDeadline,
-    latitude: l.latitude,
-    longitude: l.longitude,
-    businessName: l.businessProfile?.businessName || "Partner Bakery",
-    address: l.businessProfile?.address || "Nearby Location",
-    originalPrice: l.originalPrice ? Number(l.originalPrice) : null,
-    discountPrice: l.discountPrice ? Number(l.discountPrice) : null,
-    claimRequest: l.claimRequests[0]
-      ? {
-          id: l.claimRequests[0].id,
-          claimType: l.claimRequests[0].claimType,
-          status: l.claimRequests[0].status,
-          ngoName: l.claimRequests[0].ngoProfile?.orgName || null,
-          buyerName: l.claimRequests[0].buyerProfile?.name || null,
-        }
-      : null,
-  }));
+  return rawListings.map((l) => {
+    const distanceKm = calculateHaversineDistance(
+      buyerLat,
+      buyerLon,
+      l.latitude,
+      l.longitude
+    );
+    return {
+      id: l.id,
+      foodType: l.foodType,
+      quantity: l.quantity,
+      unit: l.unit,
+      condition: l.condition,
+      outcome: l.outcome,
+      status: l.status,
+      collectionDeadline: l.collectionDeadline,
+      latitude: l.latitude,
+      longitude: l.longitude,
+      businessName: l.businessProfile?.businessName || "Partner Bakery",
+      address: l.businessProfile?.address || "Nearby Location",
+      originalPrice: l.originalPrice ? Number(l.originalPrice) : null,
+      discountPrice: l.discountPrice ? Number(l.discountPrice) : null,
+      distanceKm,
+      claimRequest: l.claimRequests[0]
+        ? {
+            id: l.claimRequests[0].id,
+            claimType: l.claimRequests[0].claimType,
+            status: l.claimRequests[0].status,
+            ngoName: l.claimRequests[0].ngoProfile?.orgName || null,
+            buyerName: l.claimRequests[0].buyerProfile?.name || null,
+          }
+        : null,
+    };
+  });
 }

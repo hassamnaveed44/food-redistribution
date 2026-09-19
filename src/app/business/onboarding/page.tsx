@@ -13,7 +13,9 @@ export default function BusinessOnboardingPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     businessName: "",
-    address: "",
+    category: "Bakery & Cafe",
+    streetAddress: "",
+    cityState: "",
     latitude: 40.7128,
     longitude: -74.006,
     docKey: "",
@@ -22,10 +24,11 @@ export default function BusinessOnboardingPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    const fullAddress = `${formData.streetAddress}, ${formData.cityState}`;
     try {
       await registerBusinessAction({
-        businessName: formData.businessName,
-        address: formData.address,
+        businessName: `${formData.businessName} (${formData.category})`,
+        address: fullAddress,
         latitude: Number(formData.latitude),
         longitude: Number(formData.longitude),
         documentStorageKey: formData.docKey || "doc_business_registration_sample.pdf",
@@ -76,35 +79,65 @@ export default function BusinessOnboardingPage() {
               Food Business Verification
             </h1>
             <p className="text-xs text-[#6B6157]">
-              Register your restaurant, bakery, or cafeteria profile
+              Register your restaurant, bakery, grocery, or cafeteria profile
             </p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Business / Store Name"
+              placeholder="e.g. Artisan Crumbs Bakery"
+              required
+              value={formData.businessName}
+              onChange={(e) =>
+                setFormData({ ...formData, businessName: e.target.value })
+              }
+            />
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-[#211D19]">
+                Business Type / Category
+              </label>
+              <select
+                value={formData.category}
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value })
+                }
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#E3DBC9] bg-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#B84A16]"
+              >
+                <option value="Bakery & Cafe">Bakery & Cafe</option>
+                <option value="Restaurant & Bistro">Restaurant & Bistro</option>
+                <option value="Grocery & Supermarket">Grocery & Supermarket</option>
+                <option value="Hotel & Cafeteria">Hotel & Cafeteria</option>
+              </select>
+            </div>
+          </div>
+
           <Input
-            label="Business Name"
-            placeholder="e.g. Artisan Crumbs Bakery"
+            label="Street Address"
+            placeholder="e.g. 124 Market Street, Suite 4"
             required
-            value={formData.businessName}
+            value={formData.streetAddress}
             onChange={(e) =>
-              setFormData({ ...formData, businessName: e.target.value })
+              setFormData({ ...formData, streetAddress: e.target.value })
             }
           />
 
           <Input
-            label="Street Address / Location"
-            placeholder="e.g. 124 Market Street, Downtown"
+            label="City, State & Zip Code"
+            placeholder="e.g. New York, NY 10001"
             required
-            value={formData.address}
+            value={formData.cityState}
             onChange={(e) =>
-              setFormData({ ...formData, address: e.target.value })
+              setFormData({ ...formData, cityState: e.target.value })
             }
           />
 
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Latitude"
+              label="Latitude (Auto/GPS)"
               type="number"
               step="any"
               value={formData.latitude}
@@ -113,7 +146,7 @@ export default function BusinessOnboardingPage() {
               }
             />
             <Input
-              label="Longitude"
+              label="Longitude (Auto/GPS)"
               type="number"
               step="any"
               value={formData.longitude}
@@ -131,9 +164,6 @@ export default function BusinessOnboardingPage() {
               <UploadCloud className="w-8 h-8 text-[#B84A16]" />
               <span className="text-xs text-[#6B6157]">
                 Click or drag PDF / Image file to upload document
-              </span>
-              <span className="text-[10px] text-[#6B6157]/70">
-                Uploaded securely via presigned URL
               </span>
             </div>
           </div>

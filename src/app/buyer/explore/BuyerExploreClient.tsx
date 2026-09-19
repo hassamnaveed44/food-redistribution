@@ -205,12 +205,14 @@ export const BuyerExploreClient: React.FC<BuyerExploreClientProps> = ({
                         <h4 className="font-extrabold text-lg text-[#004F38] tracking-tight mb-1">
                           {item.foodType}
                         </h4>
-                        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold flex-wrap">
                           <Building2 className="w-3.5 h-3.5 text-[#FF5A5F]" />
                           <span>{item.businessName}</span>
                           <span className="text-slate-300">•</span>
                           <MapPin className="w-3.5 h-3.5 text-[#00CC88]" />
-                          <span>0.4 km away</span>
+                          <span>
+                            {item.distanceKm !== undefined ? `${item.distanceKm} km away` : item.address || "Nearby Store"}
+                          </span>
                         </div>
                       </div>
 
@@ -253,15 +255,25 @@ export const BuyerExploreClient: React.FC<BuyerExploreClientProps> = ({
                         Details
                       </Button>
 
-                      {item.status === "OPEN" ? (
+                      {item.status === "OPEN" && item.outcome === "DONATE" ? (
                         <Button
-                          variant={item.outcome === "DONATE" ? "donate" : "discount"}
+                          variant="ghost"
+                          size="sm"
+                          className="flex-1 text-xs py-2 font-bold text-[#004F38] bg-emerald-50 border border-emerald-200 cursor-not-allowed opacity-90"
+                          disabled
+                          title="Free food donations are strictly allocated to verified NGO shelters"
+                        >
+                          🎁 NGO Shelters Only
+                        </Button>
+                      ) : item.status === "OPEN" ? (
+                        <Button
+                          variant="discount"
                           size="sm"
                           className="flex-1 text-xs py-2 font-bold shadow-md"
                           disabled={isRescuing}
-                          onClick={() => handleRescueBag(item.id, item.outcome === "DONATE" ? "DONATION" : "PURCHASE")}
+                          onClick={() => handleRescueBag(item.id, "PURCHASE")}
                         >
-                          Rescue Bag
+                          Reserve Bag
                         </Button>
                       ) : item.status === "REQUESTED" ? (
                         <Button

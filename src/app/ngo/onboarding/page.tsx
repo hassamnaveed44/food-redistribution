@@ -13,7 +13,9 @@ export default function NgoOnboardingPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     orgName: "",
-    address: "",
+    orgCategory: "Homeless Shelter & Kitchen",
+    streetAddress: "",
+    cityState: "",
     receivingCapacity: 100,
     latitude: 40.7138,
     longitude: -74.001,
@@ -23,10 +25,11 @@ export default function NgoOnboardingPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    const fullAddress = `${formData.streetAddress}, ${formData.cityState}`;
     try {
       await registerNgoAction({
-        orgName: formData.orgName,
-        address: formData.address,
+        orgName: `${formData.orgName} (${formData.orgCategory})`,
+        address: fullAddress,
         receivingCapacity: Number(formData.receivingCapacity),
         latitude: Number(formData.latitude),
         longitude: Number(formData.longitude),
@@ -78,29 +81,59 @@ export default function NgoOnboardingPage() {
               NGO & Shelter Verification Setup
             </h1>
             <p className="text-xs text-[#6B6157]">
-              Register receiving capacity & non-profit verification
+              Register receiving capacity & non-profit verification details
             </p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Organization / Shelter Name"
+              placeholder="e.g. Hope Haven Community Shelter"
+              required
+              value={formData.orgName}
+              onChange={(e) =>
+                setFormData({ ...formData, orgName: e.target.value })
+              }
+            />
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-[#211D19]">
+                NGO Organization Type
+              </label>
+              <select
+                value={formData.orgCategory}
+                onChange={(e) =>
+                  setFormData({ ...formData, orgCategory: e.target.value })
+                }
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#E3DBC9] bg-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#25423A]"
+              >
+                <option value="Homeless Shelter & Kitchen">Homeless Shelter & Kitchen</option>
+                <option value="Community Food Bank">Community Food Bank</option>
+                <option value="Youth & Family Pantry">Youth & Family Pantry</option>
+                <option value="Disaster Relief Shelter">Disaster Relief Shelter</option>
+              </select>
+            </div>
+          </div>
+
           <Input
-            label="Organization / Shelter Name"
-            placeholder="e.g. Hope Haven Community Shelter"
+            label="Street Address / Facility Location"
+            placeholder="e.g. 450 5th Avenue, Building B"
             required
-            value={formData.orgName}
+            value={formData.streetAddress}
             onChange={(e) =>
-              setFormData({ ...formData, orgName: e.target.value })
+              setFormData({ ...formData, streetAddress: e.target.value })
             }
           />
 
           <Input
-            label="Facility Address"
-            placeholder="e.g. 450 5th Avenue, Midtown"
+            label="City, State & Zip Code"
+            placeholder="e.g. New York, NY 10018"
             required
-            value={formData.address}
+            value={formData.cityState}
             onChange={(e) =>
-              setFormData({ ...formData, address: e.target.value })
+              setFormData({ ...formData, cityState: e.target.value })
             }
           />
 
@@ -120,7 +153,7 @@ export default function NgoOnboardingPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Latitude"
+              label="Latitude (Auto/GPS)"
               type="number"
               step="any"
               value={formData.latitude}
@@ -129,7 +162,7 @@ export default function NgoOnboardingPage() {
               }
             />
             <Input
-              label="Longitude"
+              label="Longitude (Auto/GPS)"
               type="number"
               step="any"
               value={formData.longitude}

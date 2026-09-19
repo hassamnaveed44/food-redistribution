@@ -267,12 +267,12 @@ export const BusinessConsoleClient: React.FC<BusinessConsoleClientProps> = ({
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-[#004F38]">
                             <CheckCircle2 className="w-3.5 h-3.5 text-[#00CC88]" /> Confirmed
                           </span>
-                        ) : (
+                        ) : item.status === "REQUESTED" ? (
                           <div className="flex items-center justify-end gap-2">
                             <Button
                               variant="donate"
                               size="sm"
-                              className="text-xs font-extrabold py-1 px-3 shadow-sm"
+                              className="text-xs font-extrabold py-1 px-3 shadow-lg animate-pulse"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 handleConfirmHandover(item.id);
@@ -282,6 +282,10 @@ export const BusinessConsoleClient: React.FC<BusinessConsoleClientProps> = ({
                             </Button>
                             <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#00CC88] hidden sm:inline-block" />
                           </div>
+                        ) : (
+                          <span className="inline-block text-[11px] font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                            ⏳ Awaiting Reservation
+                          </span>
                         )}
                       </td>
                     </tr>
