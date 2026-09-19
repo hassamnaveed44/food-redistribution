@@ -7,6 +7,7 @@ import { StatusPill } from "@/components/shared/StatusPill";
 import { OutcomeBadge } from "@/components/shared/OutcomeBadge";
 import { CreateListingModal } from "@/features/listings/components/CreateListingModal";
 import { ListingDetailDrawer } from "@/features/listings/components/ListingDetailDrawer";
+import { RoleSwitcher } from "@/components/shared/RoleSwitcher";
 import { confirmPickupAction } from "@/features/claims/actions/confirmPickup";
 import {
   Plus,
@@ -82,6 +83,8 @@ export const BusinessConsoleClient: React.FC<BusinessConsoleClientProps> = ({
           </div>
 
           <div className="flex items-center flex-wrap gap-2.5 w-full sm:w-auto justify-start sm:justify-end pt-1 sm:pt-0 border-t border-emerald-800/60 sm:border-0">
+            <RoleSwitcher />
+
             <Link href="/business/reporting">
               <Button variant="secondary" size="sm" className="shadow-sm text-xs py-1.5 px-3">
                 <BarChart3 className="w-3.5 h-3.5 mr-1.5" /> Environmental Reporting

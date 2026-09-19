@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { StatusPill } from "@/components/shared/StatusPill";
 import { OutcomeBadge } from "@/components/shared/OutcomeBadge";
 import { ListingDetailDrawer } from "@/features/listings/components/ListingDetailDrawer";
+import { RoleSwitcher } from "@/components/shared/RoleSwitcher";
 import { requestClaimAction } from "@/features/claims/actions/requestClaim";
 import {
   Sparkles,
@@ -92,7 +93,9 @@ export const NgoConsoleClient: React.FC<NgoConsoleClientProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-start sm:justify-end pt-1 sm:pt-0 border-t border-emerald-800/60 sm:border-0">
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end pt-1 sm:pt-0 border-t border-emerald-800/60 sm:border-0">
+            <RoleSwitcher />
+
             <Link href="/ngo/history">
               <Button variant="donate" size="sm" className="shadow-md text-xs py-1.5 px-3">
                 <History className="w-3.5 h-3.5 mr-1.5" /> History & Impact
