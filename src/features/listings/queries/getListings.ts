@@ -13,8 +13,8 @@ export async function getMatchedListingsForNgo(
 ) {
   const bbox = getBoundingBox(ngoLat, ngoLon, radiusKm);
 
-  // SQL bounding box filter at database layer
-  let rawListings = await prisma.listing.findMany({
+  // SQL bounding box filter at database layer (strict 25 km radius)
+  const rawListings = await prisma.listing.findMany({
     where: {
       status: {
         in: ["OPEN", "REQUESTED", "MATCHED", "SCHEDULED"],
@@ -39,27 +39,6 @@ export async function getMatchedListingsForNgo(
     },
     orderBy: { createdAt: "desc" },
   });
-
-  // If no listings within tight 25km radius, fallback to all active surplus
-  if (rawListings.length === 0) {
-    rawListings = await prisma.listing.findMany({
-      where: {
-        status: {
-          in: ["OPEN", "REQUESTED", "MATCHED", "SCHEDULED"],
-        },
-      },
-      include: {
-        businessProfile: true,
-        claimRequests: {
-          include: {
-            ngoProfile: true,
-            buyerProfile: true,
-          },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    });
-  }
 
   const candidates = rawListings.map((l) => ({
     id: l.id,
