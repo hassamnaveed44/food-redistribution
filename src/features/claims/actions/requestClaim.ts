@@ -45,11 +45,13 @@ export async function requestClaimAction(input: RequestClaimInput) {
   // Create BuyerProfile for discount purchase path if needed
   let buyerProfileId: string | null = null;
   if (input.claimType === "PURCHASE") {
+    const claimantName =
+      input.buyerName || user?.ngoProfile?.orgName || user?.fullName || "Eco Rescuer";
     const buyerProfile = await prisma.buyerProfile.create({
       data: {
         userId: user?.id || null,
-        name: input.buyerName || user?.fullName || "Guest Buyer",
-        contact: input.buyerContact || user?.email || "buyer@example.com",
+        name: claimantName,
+        contact: input.buyerContact || user?.email || "rescuer@example.com",
       },
     });
     buyerProfileId = buyerProfile.id;
@@ -60,7 +62,7 @@ export async function requestClaimAction(input: RequestClaimInput) {
     data: {
       listingId: input.listingId,
       claimType: input.claimType,
-      ngoProfileId: input.claimType === "DONATION" ? ngoProfileId : null,
+      ngoProfileId: ngoProfileId,
       buyerProfileId: input.claimType === "PURCHASE" ? buyerProfileId : null,
       status: "REQUESTED",
     },

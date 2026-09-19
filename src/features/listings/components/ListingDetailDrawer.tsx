@@ -192,7 +192,13 @@ export const ListingDetailDrawer: React.FC<ListingDetailDrawerProps> = ({
               <strong className="font-extrabold block text-amber-950 text-sm mb-0.5">
                 ⏳ Waiting Store Manager Approval
               </strong>
-              <span>Your reservation pass is active. Present this digital code at store pickup for handover confirmation.</span>
+              <span>
+                {listing.claimRequest?.ngoName
+                  ? `Reserved by ${listing.claimRequest.ngoName}. Present your digital pickup token code at store pickup.`
+                  : listing.claimRequest?.buyerName && listing.claimRequest.buyerName !== "RescueBites User"
+                  ? `Reserved by ${listing.claimRequest.buyerName}. Present your digital pickup token code at store pickup.`
+                  : "Your reservation pass is active. Present this digital code at store pickup for handover confirmation."}
+              </span>
             </div>
           </div>
         )}

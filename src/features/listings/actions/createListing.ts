@@ -22,12 +22,9 @@ export async function createListingAction(input: CreateListingInput) {
   const user = await getCurrentUser();
 
   if (!user || !user.businessProfile) {
-    // If no profile exists yet, attempt to find first business profile in demo mode
-    const fallbackProfile = await prisma.businessProfile.findFirst();
-    if (!fallbackProfile) {
-      throw new Error("UNAUTHORIZED: Business profile required to post surplus listing.");
-    }
-    return await createListingWithProfile(fallbackProfile.id, input);
+    throw new Error(
+      "UNAUTHORIZED: Active business profile required. Please complete business onboarding at /business/onboarding first."
+    );
   }
 
   return await createListingWithProfile(user.businessProfile.id, input);

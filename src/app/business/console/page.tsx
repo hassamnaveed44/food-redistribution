@@ -6,12 +6,19 @@ import { BusinessConsoleClient } from "./BusinessConsoleClient";
 
 export const dynamic = "force-dynamic";
 
+import { redirect } from "next/navigation";
+
 export default async function BusinessConsolePage() {
   const user = await requireRole([Role.BUSINESS, Role.ADMIN]);
+
+  if (!user.businessProfile && user.role !== "ADMIN") {
+    redirect("/business/onboarding");
+  }
 
   let listings: any[] = [];
   try {
     listings = await prisma.listing.findMany({
+      where: user.businessProfile?.id ? { businessProfileId: user.businessProfile.id } : {},
       orderBy: { createdAt: "desc" },
       include: {
         businessProfile: true,
@@ -28,9 +35,8 @@ export default async function BusinessConsolePage() {
     console.warn("Build/Fetch fallback for listings:", e);
   }
 
-
   // Calculate stats
-  const totalActive = listings.filter((l) => l.status === "OPEN" || l.status === "MATCHED" || l.status === "SCHEDULED").length;
+  const totalActive = listings.filter((l) => l.status === "OPEN" || l.status === "REQUESTED" || l.status === "MATCHED" || l.status === "SCHEDULED").length;
   const donateCount = listings.filter((l) => l.outcome === "DONATE").length;
   const discountCount = listings.filter((l) => l.outcome === "DISCOUNT").length;
   const totalQuantity = listings.reduce((sum, l) => sum + l.quantity, 0);
@@ -52,9 +58,9 @@ export default async function BusinessConsolePage() {
       ? {
           id: l.claimRequests[0].id,
           claimType: l.claimRequests[0].claimType,
-          ngoName: l.claimRequests[0].ngoProfile?.orgName,
-          buyerName: l.claimRequests[0].buyerProfile?.name,
-          buyerContact: l.claimRequests[0].buyerProfile?.contact,
+          ngoName: l.claimRequests[0].ngoProfile?.orgName || null,
+          buyerName: l.claimRequests[0].buyerProfile?.name || null,
+          buyerContact: l.claimRequests[0].buyerProfile?.contact || null,
         }
       : null,
     pickup: l.pickup
@@ -75,7 +81,7 @@ export default async function BusinessConsolePage() {
         discountCount,
         totalQuantity,
       }}
-      userName={user?.fullName || "Business Manager"}
+      userName={user.businessProfile?.businessName || user.fullName || "Business Manager"}
     />
   );
 }

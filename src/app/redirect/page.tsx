@@ -16,16 +16,24 @@ export default async function RoleRedirectPage({
   }
 
   // Explicit query parameter override (e.g., /redirect?role=business)
-  if (params?.role === "business") redirect("/business/console");
-  if (params?.role === "ngo") redirect("/ngo/console");
+  if (params?.role === "business") {
+    if (!user.businessProfile) redirect("/business/onboarding");
+    redirect("/business/console");
+  }
+  if (params?.role === "ngo") {
+    if (!user.ngoProfile) redirect("/ngo/onboarding");
+    redirect("/ngo/console");
+  }
   if (params?.role === "buyer") redirect("/buyer/explore");
 
-  // Route based on user's assigned role in database
+  // Route based on user's assigned role in database & profile completeness
   if (user.role === "BUSINESS") {
+    if (!user.businessProfile) redirect("/business/onboarding");
     redirect("/business/console");
   }
 
   if (user.role === "NGO") {
+    if (!user.ngoProfile) redirect("/ngo/onboarding");
     redirect("/ngo/console");
   }
 

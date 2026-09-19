@@ -103,32 +103,6 @@ export async function getCurrentUser() {
     let ngoP = await prisma.ngoProfile.findUnique({ where: { userId: rawUser.id } }).catch(() => null);
     let bizP = await prisma.businessProfile.findUnique({ where: { userId: rawUser.id } }).catch(() => null);
 
-    // Auto-create missing profile row in Neon DB if needed
-    if (rawUser.role === Role.BUSINESS && !bizP) {
-      bizP = await prisma.businessProfile.create({
-        data: {
-          userId: rawUser.id,
-          businessName: rawUser.fullName ? `${rawUser.fullName}'s Kitchen` : "Artisan Partner Store",
-          address: "100 Market St, Downtown",
-          latitude: 40.7128,
-          longitude: -74.006,
-          verificationStatus: "APPROVED",
-        },
-      }).catch(() => null);
-    } else if (rawUser.role === Role.NGO && !ngoP) {
-      ngoP = await prisma.ngoProfile.create({
-        data: {
-          userId: rawUser.id,
-          orgName: rawUser.fullName ? `${rawUser.fullName} Relief Hub` : "Community Shelter Hub",
-          address: "200 Community Way, Midtown",
-          latitude: 40.7138,
-          longitude: -74.001,
-          receivingCapacity: 150,
-          verificationStatus: "APPROVED",
-        },
-      }).catch(() => null);
-    }
-
     return {
       ...rawUser,
       ngoProfile: ngoP,
