@@ -1,12 +1,13 @@
 import React from "react";
-import { getCurrentUser } from "@/server/auth/guards";
+import { getCurrentUser, requireRole } from "@/server/auth/guards";
+import { Role } from "@prisma/client";
 import { getMatchedListingsForNgo } from "@/features/listings/queries/getListings";
 import { NgoConsoleClient } from "./NgoConsoleClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function NgoConsolePage() {
-  const user = await getCurrentUser();
+  const user = await requireRole([Role.NGO, Role.ADMIN]);
 
   const ngoProfile = user?.ngoProfile || {
     orgName: "Hope Haven Community Shelter",

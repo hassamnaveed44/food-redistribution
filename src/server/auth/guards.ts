@@ -1,4 +1,5 @@
 import { auth, currentUser as getClerkUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { prisma } from "@/server/db/prisma";
 import { Role } from "@prisma/client";
 
@@ -35,7 +36,7 @@ export async function getCurrentUser() {
     if (!rawUser) {
       let email = `${clerkUserId}@user.rescuebites.com`;
       let fullName = "RescueBites User";
-      let role: Role = Role.NGO;
+      let role: Role = Role.BUYER;
 
       try {
         const clerkUser = await getClerkUser();
@@ -48,8 +49,9 @@ export async function getCurrentUser() {
 
           const roleMeta = (clerkUser.unsafeMetadata?.role as string)?.toUpperCase();
           if (roleMeta === "BUSINESS") role = Role.BUSINESS;
+          else if (roleMeta === "NGO") role = Role.NGO;
           else if (roleMeta === "ADMIN") role = Role.ADMIN;
-          else role = Role.NGO;
+          else role = Role.BUYER;
         }
       } catch (syncErr) {
         console.warn("Clerk user details fetch warning:", syncErr);
@@ -89,19 +91,10 @@ export async function getCurrentUser() {
         clerkUserId,
         email: `${clerkUserId}@user.rescuebites.com`,
         fullName: "Authenticated User",
-        role: Role.NGO,
+        role: Role.BUYER,
         createdAt: new Date(),
         updatedAt: new Date(),
-        ngoProfile: {
-          id: clerkUserId,
-          userId: clerkUserId,
-          orgName: "Community Hope Hub",
-          address: "200 Community Way, Midtown",
-          latitude: 40.7138,
-          longitude: -74.001,
-          receivingCapacity: 150,
-          verificationStatus: "APPROVED",
-        },
+        ngoProfile: null,
         businessProfile: null,
       };
     }
@@ -122,7 +115,7 @@ export async function getCurrentUser() {
           verificationStatus: "APPROVED",
         },
       }).catch(() => null);
-    } else if (!ngoP && !bizP) {
+    } else if (rawUser.role === Role.NGO && !ngoP) {
       ngoP = await prisma.ngoProfile.create({
         data: {
           userId: rawUser.id,
@@ -151,13 +144,11 @@ export async function requireRole(allowedRoles: Role[]) {
   const user = await getCurrentUser();
 
   if (!user) {
-    throw new Error("UNAUTHENTICATED: Session credential missing or invalid");
+    redirect("/sign-in");
   }
 
   if (!allowedRoles.includes(user.role)) {
-    throw new Error(
-      `FORBIDDEN: User lacks required role [${allowedRoles.join(", ")}]`
-    );
+    redirect("/redirect");
   }
 
   return user;

@@ -12,9 +12,13 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+import { getCurrentUser, requireRole } from "@/server/auth/guards";
+import { Role } from "@prisma/client";
+
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
+  const user = await requireRole([Role.ADMIN]);
   let pendingBusinesses = 0;
   let pendingNgos = 0;
   let totalListings = 0;

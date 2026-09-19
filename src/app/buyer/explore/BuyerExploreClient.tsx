@@ -224,15 +224,35 @@ export const BuyerExploreClient: React.FC<BuyerExploreClientProps> = ({
                         Details
                       </Button>
 
-                      <Button
-                        variant={item.outcome === "DONATE" ? "donate" : "discount"}
-                        size="sm"
-                        className="flex-1 text-xs py-2 font-bold shadow-md"
-                        disabled={isClaimed || isRescuing}
-                        onClick={() => handleRescueBag(item.id)}
-                      >
-                        {isClaimed ? "Reserved ✓" : "Rescue Bag"}
-                      </Button>
+                      {item.status === "OPEN" ? (
+                        <Button
+                          variant={item.outcome === "DONATE" ? "donate" : "discount"}
+                          size="sm"
+                          className="flex-1 text-xs py-2 font-bold shadow-md"
+                          disabled={isRescuing}
+                          onClick={() => handleRescueBag(item.id)}
+                        >
+                          Rescue Bag
+                        </Button>
+                      ) : item.status === "REQUESTED" ? (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="flex-1 text-xs py-2 font-bold text-amber-800 bg-amber-50 border border-amber-300 opacity-90 cursor-not-allowed"
+                          disabled
+                        >
+                          ⏳ Waiting Approval
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="flex-1 text-xs py-2 font-bold text-[#004F38] bg-emerald-50 border border-emerald-300 opacity-90 cursor-not-allowed"
+                          disabled
+                        >
+                          Rescued ✓
+                        </Button>
+                      )}
                     </div>
                   </motion.div>
                 );

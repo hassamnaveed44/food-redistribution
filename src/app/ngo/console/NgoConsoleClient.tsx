@@ -324,9 +324,23 @@ export const NgoConsoleClient: React.FC<NgoConsoleClientProps> = ({
                       >
                         Reserve Bag
                       </Button>
+                    ) : item.status === "REQUESTED" ? (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="w-1/2 text-xs font-bold text-amber-800 bg-amber-50 border border-amber-300 opacity-90 cursor-not-allowed"
+                        disabled
+                      >
+                        ⏳ Waiting Approval
+                      </Button>
                     ) : (
-                      <Button variant="ghost" size="sm" className="w-1/2 text-xs" disabled>
-                        Rescued
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-1/2 text-xs font-bold text-[#004F38] bg-emerald-50 border border-emerald-300 opacity-90 cursor-not-allowed"
+                        disabled
+                      >
+                        Rescued ✓
                       </Button>
                     )}
                   </div>

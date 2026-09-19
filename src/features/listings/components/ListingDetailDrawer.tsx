@@ -167,7 +167,31 @@ export const ListingDetailDrawer: React.FC<ListingDetailDrawerProps> = ({
         </div>
 
         {/* Claimant Info */}
-        {listing.claimRequest ? (
+        {listing.status === "REQUESTED" && (
+          <div className="p-4 rounded-2xl border border-amber-300 bg-amber-50 shadow-sm flex items-start gap-2.5 text-xs text-amber-900 font-medium">
+            <Clock className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <strong className="font-extrabold block text-amber-950 text-sm mb-0.5">
+                ⏳ Waiting Store Manager Approval
+              </strong>
+              <span>Your reservation pass is active. Present this digital code at store pickup for handover confirmation.</span>
+            </div>
+          </div>
+        )}
+
+        {listing.status === "CONFIRMED" && (
+          <div className="p-4 rounded-2xl border border-emerald-300 bg-emerald-50 shadow-sm flex items-start gap-2.5 text-xs text-emerald-950 font-medium">
+            <PackageCheck className="w-5 h-5 text-[#00CC88] shrink-0 mt-0.5" />
+            <div>
+              <strong className="font-extrabold block text-[#004F38] text-sm mb-0.5">
+                Rescued ✓ (Handover Completed)
+              </strong>
+              <span>This surplus bag was successfully collected and recorded in sustainability impact metrics.</span>
+            </div>
+          </div>
+        )}
+
+        {listing.claimRequest && listing.status !== "REQUESTED" && listing.status !== "CONFIRMED" && (
           <div className="p-4 rounded-2xl border border-[#00CC88]/40 bg-emerald-50/60 shadow-sm">
             <h3 className="font-bold text-xs text-[#004F38] uppercase tracking-wider mb-2 flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-[#00CC88]" /> Matched Recipient
@@ -183,7 +207,9 @@ export const ListingDetailDrawer: React.FC<ListingDetailDrawerProps> = ({
               )}
             </div>
           </div>
-        ) : (
+        )}
+
+        {!listing.claimRequest && listing.status === "OPEN" && (
           <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 text-xs text-slate-600 flex items-center gap-2 font-medium">
             <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
             <span>Surplus bag is active & open for discovery near you.</span>

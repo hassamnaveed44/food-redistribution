@@ -1,12 +1,13 @@
 import React from "react";
 import { prisma } from "@/server/db/prisma";
-import { getCurrentUser } from "@/server/auth/guards";
+import { getCurrentUser, requireRole } from "@/server/auth/guards";
+import { Role } from "@prisma/client";
 import { BusinessConsoleClient } from "./BusinessConsoleClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function BusinessConsolePage() {
-  const user = await getCurrentUser();
+  const user = await requireRole([Role.BUSINESS, Role.ADMIN]);
 
   let listings: any[] = [];
   try {
