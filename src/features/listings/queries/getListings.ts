@@ -51,7 +51,15 @@ export async function getMatchedListingsForNgo(
     address: l.businessProfile?.address || "Nearby Location",
     originalPrice: l.originalPrice ? Number(l.originalPrice) : null,
     discountPrice: l.discountPrice ? Number(l.discountPrice) : null,
-    claimRequest: l.claimRequests[0] || null,
+    claimRequest: l.claimRequests[0]
+      ? {
+          id: l.claimRequests[0].id,
+          claimType: l.claimRequests[0].claimType,
+          status: l.claimRequests[0].status,
+          ngoName: l.claimRequests[0].ngoProfile?.orgName || null,
+          buyerName: l.claimRequests[0].buyerProfile?.name || null,
+        }
+      : null,
   }));
 
   // Rank in memory using Haversine & capacity
@@ -92,6 +100,14 @@ export async function getMatchedListingsForBuyer() {
     address: l.businessProfile?.address || "Nearby Location",
     originalPrice: l.originalPrice ? Number(l.originalPrice) : null,
     discountPrice: l.discountPrice ? Number(l.discountPrice) : null,
-    claimRequest: l.claimRequests[0] || null,
+    claimRequest: l.claimRequests[0]
+      ? {
+          id: l.claimRequests[0].id,
+          claimType: l.claimRequests[0].claimType,
+          status: l.claimRequests[0].status,
+          ngoName: l.claimRequests[0].ngoProfile?.orgName || null,
+          buyerName: l.claimRequests[0].buyerProfile?.name || null,
+        }
+      : null,
   }));
 }

@@ -209,14 +209,34 @@ export function LandingClient({ initialListings = [], stats }: LandingClientProp
       <section className="py-20 px-6 max-w-6xl mx-auto w-full">
         <div className="text-center mb-12">
           <span className="text-xs font-extrabold tracking-wider uppercase px-3 py-1 rounded-full bg-[#FF5A5F]/10 text-[#FF5A5F] border border-[#FF5A5F]/20 mb-3 inline-block">
-            FEATURED SURPRISE MAGIC BAGS
+            FEATURED SURPRISE MAGIC BAGS & DONATIONS
           </span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-[#004F38] tracking-tight mb-3">
             What will you rescue today?
           </h2>
-          <p className="text-sm text-slate-600 max-w-xl mx-auto font-medium">
-            Explore live surplus listings fetched in real-time from Neon PostgreSQL.
+          <p className="text-sm text-slate-600 max-w-xl mx-auto font-medium mb-6">
+            Explore live surplus inventory listed in real-time by top local bakeries, cafes, and markets.
           </p>
+
+          {/* Dual Action Options CTA Banner */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-md max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
+            <span className="text-xs font-extrabold text-[#004F38] flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-[#FF5A5F]" /> Select your account path:
+            </span>
+
+            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+              <Link href={isSignedIn ? "/redirect" : "/sign-up?role=buyer"} className="flex-1 sm:flex-none">
+                <Button variant="discount" size="sm" className="w-full text-xs font-extrabold px-4 py-2 shadow-sm">
+                  <ShoppingBag className="w-3.5 h-3.5 mr-1.5" /> Food Rescuer (60-70% Off)
+                </Button>
+              </Link>
+              <Link href={isSignedIn ? "/redirect" : "/sign-up?role=ngo"} className="flex-1 sm:flex-none">
+                <Button variant="donate" size="sm" className="w-full text-xs font-extrabold px-4 py-2 shadow-sm">
+                  <HeartHandshake className="w-3.5 h-3.5 mr-1.5 text-[#00CC88]" /> Verified NGO (100% Free)
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -243,14 +263,14 @@ export function LandingClient({ initialListings = [], stats }: LandingClientProp
                 </div>
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                    {item.condition} ({item.quantity} {item.unit})
+                    "{item.condition}" ({item.quantity} {item.unit})
                   </p>
                   <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs font-bold text-slate-700">
                     <span className="flex items-center gap-1 text-[#FF5A5F]">
                       <Clock className="w-4 h-4" />
                       Deadline: {new Date(item.collectionDeadline).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </span>
-                    <Link href={isSignedIn ? "/redirect" : "/sign-up"}>
+                    <Link href={isSignedIn ? "/redirect" : item.outcome === "DONATE" ? "/sign-up?role=ngo" : "/sign-up?role=buyer"}>
                       <Button variant={item.outcome === "DONATE" ? "donate" : "discount"} size="sm">
                         {item.outcome === "DONATE" ? "Claim Free" : `Reserve $${item.discountPrice || 6.0}`}
                       </Button>
@@ -284,7 +304,7 @@ export function LandingClient({ initialListings = [], stats }: LandingClientProp
                     <span className="flex items-center gap-1 text-[#FF5A5F]">
                       <Clock className="w-4 h-4" /> Pickup: 17:00 - 19:00
                     </span>
-                    <Link href={isSignedIn ? "/redirect" : "/sign-up"}>
+                    <Link href={isSignedIn ? "/redirect" : "/sign-up?role=buyer"}>
                       <Button variant="discount" size="sm">Reserve $6.00</Button>
                     </Link>
                   </div>
@@ -313,7 +333,7 @@ export function LandingClient({ initialListings = [], stats }: LandingClientProp
                     <span className="flex items-center gap-1 text-[#004F38]">
                       <CheckCircle2 className="w-4 h-4 text-[#00CC88]" /> Verified NGO Free
                     </span>
-                    <Link href={isSignedIn ? "/redirect" : "/sign-up"}>
+                    <Link href={isSignedIn ? "/redirect" : "/sign-up?role=ngo"}>
                       <Button variant="donate" size="sm">Claim Free</Button>
                     </Link>
                   </div>
@@ -327,38 +347,41 @@ export function LandingClient({ initialListings = [], stats }: LandingClientProp
       {/* How It Works Step-by-Step */}
       <section className="bg-white py-20 px-6 border-t border-slate-200/80">
         <div className="max-w-6xl mx-auto text-center">
+          <span className="text-xs font-extrabold tracking-wider uppercase px-3 py-1 rounded-full bg-[#00CC88]/20 text-[#004F38] border border-[#00CC88]/30 mb-3 inline-block">
+            SUSTAINABLE FOOD REDISTRIBUTION PROCESS
+          </span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-[#004F38] tracking-tight mb-12">
             How RescueBites Works in 3 Simple Steps
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-            <div className="p-6 rounded-2xl bg-[#FAF9F6] border border-slate-200/80 relative">
-              <div className="w-10 h-10 rounded-full bg-[#004F38] text-[#00CC88] font-black text-lg flex items-center justify-center mb-4">
-                1
+            <div className="p-6 rounded-3xl bg-[#FAF9F6] border border-slate-200/80 shadow-md relative group hover:-translate-y-1 transition-all">
+              <div className="w-12 h-12 rounded-2xl bg-[#004F38] text-[#00CC88] font-black text-xl flex items-center justify-center mb-4 shadow-sm group-hover:scale-105 transition-transform">
+                <Building2 className="w-6 h-6 text-[#00CC88]" />
               </div>
-              <h3 className="font-extrabold text-lg text-[#004F38] mb-2">Find a Surprise Bag</h3>
+              <h3 className="font-extrabold text-lg text-[#004F38] mb-2">1. Stores List Unsold Surplus</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Use the interactive map or list feed to discover surplus food near you from bakeries, cafes, and supermarkets.
+                Bakeries, cafes, and supermarkets list unsold daily food as <strong>Surprise Magic Bags (60-70% off)</strong> or <strong>100% Free NGO Donations</strong> in under 30 seconds.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#FAF9F6] border border-slate-200/80 relative">
-              <div className="w-10 h-10 rounded-full bg-[#004F38] text-[#FF5A5F] font-black text-lg flex items-center justify-center mb-4">
-                2
+            <div className="p-6 rounded-3xl bg-[#FAF9F6] border border-slate-200/80 shadow-md relative group hover:-translate-y-1 transition-all">
+              <div className="w-12 h-12 rounded-2xl bg-[#FF5A5F] text-white font-black text-xl flex items-center justify-center mb-4 shadow-sm group-hover:scale-105 transition-transform">
+                <ShoppingBag className="w-6 h-6 text-amber-200" />
               </div>
-              <h3 className="font-extrabold text-lg text-[#004F38] mb-2">Reserve in 1-Click</h3>
+              <h3 className="font-extrabold text-lg text-[#004F38] mb-2">2. Rescuers & Shelters Discover</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Reserve your Surprise Bag at 60-70% off or claim free donations instantly with double-allocation safety guards.
+                Local residents reserve discounted mystery bags while verified non-profit shelters claim free bulk meal allocations matched to daily capacity.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#FAF9F6] border border-slate-200/80 relative">
-              <div className="w-10 h-10 rounded-full bg-[#004F38] text-[#FFC72C] font-black text-lg flex items-center justify-center mb-4">
-                3
+            <div className="p-6 rounded-3xl bg-[#FAF9F6] border border-slate-200/80 shadow-md relative group hover:-translate-y-1 transition-all">
+              <div className="w-12 h-12 rounded-2xl bg-[#00CC88] text-[#004F38] font-black text-xl flex items-center justify-center mb-4 shadow-sm group-hover:scale-105 transition-transform">
+                <CheckCircle2 className="w-6 h-6 text-[#004F38]" />
               </div>
-              <h3 className="font-extrabold text-lg text-[#004F38] mb-2">Collect & Enjoy</h3>
+              <h3 className="font-extrabold text-lg text-[#004F38] mb-2">3. Present Token & Collect</h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Show your digital pickup voucher at the store during the collection window, take home your food, and celebrate!
+                Rescuers present their digital voucher token code at store pickup. The store confirms handover with 1 tap, logging sustainability impact.
               </p>
             </div>
           </div>

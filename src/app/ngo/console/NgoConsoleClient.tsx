@@ -328,10 +328,16 @@ export const NgoConsoleClient: React.FC<NgoConsoleClientProps> = ({
                       <Button
                         variant="secondary"
                         size="sm"
-                        className="w-1/2 text-xs font-bold text-amber-800 bg-amber-50 border border-amber-300 opacity-90 cursor-not-allowed"
+                        className="w-1/2 text-xs font-bold text-amber-900 bg-amber-50 border border-amber-300 opacity-90 cursor-not-allowed"
                         disabled
                       >
-                        ⏳ Waiting Approval
+                        {item.claimRequest?.buyerName ? (
+                          <span>Reserved by {item.claimRequest.buyerName}</span>
+                        ) : item.claimRequest?.ngoName ? (
+                          <span>Reserved by {item.claimRequest.ngoName}</span>
+                        ) : (
+                          <span>⏳ Waiting Approval</span>
+                        )}
                       </Button>
                     ) : (
                       <Button

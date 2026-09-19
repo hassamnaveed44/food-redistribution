@@ -238,10 +238,14 @@ export const BuyerExploreClient: React.FC<BuyerExploreClientProps> = ({
                         <Button
                           variant="secondary"
                           size="sm"
-                          className="flex-1 text-xs py-2 font-bold text-amber-800 bg-amber-50 border border-amber-300 opacity-90 cursor-not-allowed"
+                          className="flex-1 text-xs py-2 font-bold text-amber-900 bg-amber-50 border border-amber-300 opacity-90 cursor-not-allowed"
                           disabled
                         >
-                          ⏳ Waiting Approval
+                          {item.claimRequest?.ngoName ? (
+                            <span>Reserved by {item.claimRequest.ngoName}</span>
+                          ) : (
+                            <span>⏳ Waiting Approval</span>
+                          )}
                         </Button>
                       ) : (
                         <Button

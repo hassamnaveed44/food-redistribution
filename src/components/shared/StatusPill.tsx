@@ -38,7 +38,7 @@ export const StatusPill: React.FC<StatusPillProps> = ({
       if (quantityLeft && quantityLeft <= 3) {
         return (
           <span
-            className={`inline-flex items-center font-bold rounded-full bg-[#FF5A5F] text-white shadow-sm ${sizeClasses}`}
+            className={`inline-flex items-center font-extrabold rounded-full bg-[#FF5A5F] text-white shadow-sm ${sizeClasses}`}
           >
             <ShoppingBag className="w-3 h-3 text-white" />
             <span>ONLY {quantityLeft} LEFT</span>
@@ -47,7 +47,7 @@ export const StatusPill: React.FC<StatusPillProps> = ({
       }
       return (
         <span
-          className={`inline-flex items-center font-bold rounded-full bg-[#00CC88]/15 text-[#004F38] border border-[#00CC88]/40 ${sizeClasses}`}
+          className={`inline-flex items-center font-extrabold rounded-full bg-emerald-100 text-[#004F38] border border-emerald-300 shadow-xs ${sizeClasses}`}
         >
           <Clock className="w-3 h-3 text-[#004F38]" />
           <span>AVAILABLE TODAY</span>
@@ -57,10 +57,10 @@ export const StatusPill: React.FC<StatusPillProps> = ({
     case "REQUESTED":
       return (
         <span
-          className={`inline-flex items-center font-bold rounded-full bg-[#FFC72C]/20 text-[#8A5B00] border border-amber-300 ${sizeClasses}`}
+          className={`inline-flex items-center font-extrabold rounded-full bg-amber-100 text-amber-900 border border-amber-300 shadow-xs ${sizeClasses}`}
         >
-          <Clock className="w-3 h-3 text-[#F59E0B]" />
-          <span>REQUESTED</span>
+          <Clock className="w-3 h-3 text-amber-700" />
+          <span>WAITING APPROVAL</span>
         </span>
       );
 
